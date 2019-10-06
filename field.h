@@ -10,6 +10,7 @@ class Field : public QWidget {
 
 public:
     explicit Field(QWidget *parent = nullptr, char difficulty = 'e');
+    void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *Event);
     //void Field::mousePressEvent(QMouseEvent *event);
 

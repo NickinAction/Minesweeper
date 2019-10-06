@@ -51,3 +51,7 @@ void Field::paintEvent(QPaintEvent *Event) {
 
 }
 
+void Field::mousePressEvent(QMouseEvent *e){
+    qDebug() << e->button() << " x: " << e->x() << " y: " << e->y() << endl;
+}
+
