@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QCursor>
 #include <QMouseEvent>
+#include <QPixmap>
 
 Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     this->difficulty = difficulty;
@@ -19,6 +20,9 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 void Field::paintEvent(QPaintEvent *Event) {
 
     QPainter painter(this);
+    QPixmap flag = QPixmap(":/new/images/flag.png");
+    //painter.drawPixmap(10,10,50,50, flag);
+
     painter.fillRect(0, 0, fieldPixelSize, fieldPixelSize, block_color);
 
     //difficulty = 'h';//temporary
@@ -41,6 +45,7 @@ void Field::paintEvent(QPaintEvent *Event) {
         }
     }
 
+    painter.drawPixmap(0, 0, blockSize, blockSize, flag);
     //QPoint pos = QCursor::pos();
 
 
