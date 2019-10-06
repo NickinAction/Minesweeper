@@ -15,6 +15,14 @@ public:
     explicit StartGameDialog(QWidget *parent = nullptr);
     ~StartGameDialog();
 
+signals:
+    void setDifficulty(char difficulty);
+
+public slots:
+    void easyButton();
+    void mediumButton();
+    void hardButton();
+
 private:
     Ui::StartGameDialog *ui;
 };
