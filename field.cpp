@@ -12,8 +12,8 @@
 #include <QCursor>
 #include <QMouseEvent>
 
-Field::Field(QWidget *parent) : QWidget(parent){
-
+Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
+    this->difficulty = difficulty;
 }
 
 void Field::paintEvent(QPaintEvent *Event) {
@@ -21,7 +21,7 @@ void Field::paintEvent(QPaintEvent *Event) {
     QPainter painter(this);
     painter.fillRect(0, 0, fieldPixelSize, fieldPixelSize, block_color);
 
-    difficulty = 'h';//temporary
+    //difficulty = 'h';//temporary
 
     if (difficulty == 'e'){
         fieldSize = 10;

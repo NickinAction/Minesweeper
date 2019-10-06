@@ -11,12 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    field = new Field();
     dialog = new StartGameDialog(this);
     connect(dialog, SIGNAL(setDifficulty(char)), this, SLOT(setDifficulty(char)));
-    ui->verticalLayout->addWidget(field);
-
     connect(this->ui->startButton, SIGNAL(clicked()), this->dialog, SLOT(show()));
 }
 
@@ -26,9 +22,11 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::setDifficulty(char diff) {
-    difficulty = diff;
-    qDebug() << "Difficulty: " << difficulty << endl;
-
+    if (field) {
+        field->close();
+    }
+    field = new Field(this, diff);
+    ui->verticalLayout->addWidget(field);
 }
 
 

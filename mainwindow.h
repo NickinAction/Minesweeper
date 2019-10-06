@@ -27,8 +27,6 @@ private:
     Field *field = new Field();
     StartGameDialog* dialog;
 
-    char difficulty;
-
 };
 
 #endif // MAINWINDOW_H
