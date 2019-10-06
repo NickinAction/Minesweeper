@@ -19,9 +19,6 @@ public:
     ~MainWindow();
 
 private:
-
-    QColor block_color = QColor(170, 170, 170, 255);
-    QColor field_color = QColor(187,187,187, 255);
     Ui::MainWindow *ui;
     Field *field = new Field();
     StartGameDialog* dialog;
