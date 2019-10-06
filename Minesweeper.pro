@@ -27,13 +27,16 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    field.cpp
+    field.cpp \
+    startgamedialog.cpp
 HEADERS += \
         mainwindow.h \
-    field.h
+    field.h \
+    startgamedialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    startgamedialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

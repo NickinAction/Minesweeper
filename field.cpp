@@ -10,10 +10,7 @@
 #include <QtDebug>
 #include <QPainter>
 
-Field::Field(QWidget *parent) : QWidget(parent)
-{
-    QColor block_color = QColor(155, 170, 170, 255);
-    QColor field_color = QColor(187,187,187, 255);
+Field::Field(QWidget *parent) : QWidget(parent){
 
 }
 

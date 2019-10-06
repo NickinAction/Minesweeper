@@ -12,15 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //QRect frame = ui->fieldFrame->geometry();
-
-
-    QColor block_color = QColor(155, 170, 170, 255);
-    QColor field_color = QColor(187,187,187, 255);
-
     field = new Field();
+    dialog = new StartGameDialog();
     ui->verticalLayout->addWidget(field);
 
+    connect(this->ui->startButton, SIGNAL(clicked()), this->dialog, SLOT(show()));
 }
 
 MainWindow::~MainWindow()
