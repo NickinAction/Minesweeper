@@ -1,5 +1,9 @@
 <RCC>
-    <qresource prefix="/new/images">
+    <qresource prefix="/images">
         <file>flag.png</file>
+        <file>Gnome-gnomine.png</file>
+        <file>Minesweeper_flag.svg.png</file>
+        <file>Minesweeper_pressed-square.svg.png</file>
+        <file>Minesweeper_unopened_square.svg.png</file>
     </qresource>
 </RCC>
