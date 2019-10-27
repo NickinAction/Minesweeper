@@ -26,6 +26,7 @@ public:
 
     bool drawflag = false;
     char fieldArray[38][38];
+    char hiddenFieldArray[38][38];
 
 private:
     enum FIELD_VALUES {
@@ -33,6 +34,8 @@ private:
         FLAG = 'f',
         OPENED = 'o'
     };
+    const int MINE = -1;
+
     QPixmap flag;
     QPixmap unopened_block;
     QPixmap mine;

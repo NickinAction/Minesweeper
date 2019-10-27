@@ -29,12 +29,15 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     // This code just asksfor switch/case instead.
     if (difficulty == 'e'){
         fieldSize = 10;
+        mineCount = 12;
     }
     else if (difficulty == 'm') {
         fieldSize = 25;
+        mineCount = 94;
     }
     else if (difficulty == 'h') {
         fieldSize = 38;
+        mineCount = 216;
     }
 
     blockSize = fieldPixelSize/fieldSize;
@@ -44,6 +47,8 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
             fieldArray[i][j] = UNOPENED;
         }
     }
+
+
 }
 
 void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
@@ -106,4 +111,8 @@ void Field::mousePressEvent(QMouseEvent *e){
 
 bool Field::withinField(int x, int y) {
     return(x >= 0 && x <= 950 && x >= 0 && y <= 950);
+}
+
+void Field::generateHiddenField() {
+    for(int i = 0; i < )
 }
