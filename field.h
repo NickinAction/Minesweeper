@@ -24,11 +24,20 @@ public:
     // these three exclusively.
     int fieldSize;
 
-    int mouseEventblockX;
-    int mouseEventblockY;
-
     bool drawflag = false;
     char fieldArray[38][38];
+
+private:
+    enum FIELD_VALUES {
+        UNOPENED = 'u',
+        FLAG = 'f'
+    };
+    QPixmap flag;
+    QPixmap unopened_block;
+    QPixmap mine;
+    QPixmap opened_block;
+
+    bool withinField(int x, int y);
 
 };
 

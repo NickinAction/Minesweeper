@@ -18,6 +18,14 @@
 
 Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     this->difficulty = difficulty;
+
+
+    flag = QPixmap(":/images/Minesweeper_flag.svg.png");
+    unopened_block = QPixmap(":/images/Minesweeper_unopened_square.svg.png");
+    mine = QPixmap(":/images/Gnome-gnomine.png");
+    opened_block = QPixmap(":/images/Minesweeper_pressed-square.svg.png");
+
+
     // This code just asksfor switch/case instead.
     if (difficulty == 'e'){
         fieldSize = 10;
@@ -33,7 +41,7 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
     for(int i = 0; i < fieldSize; i++) {
         for(int j = 0; j < fieldSize; j++) {
-            fieldArray[i][j] = 'u';
+            fieldArray[i][j] = UNOPENED;
         }
     }
 }
@@ -41,36 +49,51 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
 
     QPainter painter(this);
-    QPixmap flag = QPixmap(":/new/images/flag.png");
-
     for (int i = 0; i < fieldSize; i++) {
         for (int j = 0; j < fieldSize; j++) {
             switch(fieldArray[i][j]) {
-                case 'u':
-                painter.fillRect(blockSize*i, blockSize*j, blockSize, blockSize, block_color);\
-                painter.drawRect(blockSize*i, blockSize*j, blockSize, blockSize);// will be changed in the future (Pixmap)
+                case UNOPENED:
+                    painter.fillRect(blockSize*i, blockSize*j, blockSize, blockSize, block_color);
+                    painter.drawRect(blockSize*i, blockSize*j, blockSize, blockSize);// will be changed in the future (Pixmap)
+                break;
+                case FLAG:
+                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, flag);
+                break;
+
+            }
+        }
+    }
 
 
+}
+
+void Field::mousePressEvent(QMouseEvent *e){
+
+    int MEblockX; // mouse event block
+    int MEblockY;
+
+    if (e->button() == Qt::LeftButton) {
+
+    } else if (e->button() == Qt::RightButton){
+        if (withinField(e->x(), e->y())) {
+            MEblockX = e->x()/blockSize;
+            MEblockY = e->y()/blockSize;
+
+            if(fieldArray[MEblockX][MEblockY] == FLAG) {
+                fieldArray[MEblockX][MEblockY] = UNOPENED;
+            }
+            else if (fieldArray[MEblockX][MEblockY] == UNOPENED) {
+                fieldArray[MEblockX][MEblockY] = FLAG;
             }
 
         }
     }
 
-    painter.drawPixmap(0, 0, blockSize, blockSize, flag);
+    qDebug() << e->button() << " x: " << e->x() << " y: " << e->y() << endl;
+    this->update();
 }
 
-void Field::mousePressEvent(QMouseEvent *e){
 
-    if (e->button() == Qt::LeftButton) {
-
-    } else if (e->button() == Qt::RightButton){
-        if (e->x() >= 0 && e->x() <= 950 && e->y() >= 0 && e->y() <= 950) {
-            mouseEventblockX = e->x()/blockSize;
-            mouseEventblockY = e->y()/blockSize;
-
-            drawflag = true; // REDO THIS
-        }
-    }
-
-    qDebug() << e->button() << " x: " << e->x() << " y: " << e->y() << endl;
+bool Field::withinField(int x, int y) {
+    return(x >= 0 && x <= 950 && x >= 0 && y <= 950);
 }
