@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "field.h"
+//#include "field.h"
+// I don't think you need to duplicate imports both in header and source.
+// At least on my machine it works just fine without it.
 #include <QTimer>
 #include <QKeyEvent>
 #include <QtDebug>
@@ -28,20 +30,3 @@ void MainWindow::setDifficulty(char diff) {
     field = new Field(this, diff);
     ui->verticalLayout->addWidget(field);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

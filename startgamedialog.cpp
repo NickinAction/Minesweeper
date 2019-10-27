@@ -20,7 +20,6 @@ StartGameDialog::~StartGameDialog()
 void StartGameDialog::easyButton() {
     emit(setDifficulty('e'));
     close();
-
 }
 
 void StartGameDialog::mediumButton() {
@@ -32,4 +31,3 @@ void StartGameDialog::hardButton() {
     emit(setDifficulty('h'));
     close();
 }
-

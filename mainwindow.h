@@ -18,7 +18,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
 public slots:
     void setDifficulty(char diff);
 
@@ -26,7 +25,6 @@ private:
     Ui::MainWindow *ui;
     Field *field = new Field();
     StartGameDialog* dialog;
-
 };
 
 #endif // MAINWINDOW_H
