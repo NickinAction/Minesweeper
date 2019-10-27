@@ -53,12 +53,13 @@ void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
         for (int j = 0; j < fieldSize; j++) {
             switch(fieldArray[i][j]) {
                 case UNOPENED:
-                    painter.fillRect(blockSize*i, blockSize*j, blockSize, blockSize, block_color);
-                    painter.drawRect(blockSize*i, blockSize*j, blockSize, blockSize);// will be changed in the future (Pixmap)
+                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, unopened_block);
                 break;
                 case FLAG:
                     painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, flag);
                 break;
+            default: //opened
+                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, opened_block);
 
             }
         }
@@ -73,6 +74,15 @@ void Field::mousePressEvent(QMouseEvent *e){
     int MEblockY;
 
     if (e->button() == Qt::LeftButton) {
+        if (withinField(e->x(), e->y())) {
+            MEblockX = e->x()/blockSize;
+            MEblockY = e->y()/blockSize;
+
+            if(fieldArray[MEblockX][MEblockY] == UNOPENED) {
+                fieldArray[MEblockX][MEblockY] = OPENED;
+            }
+
+        }
 
     } else if (e->button() == Qt::RightButton){
         if (withinField(e->x(), e->y())) {

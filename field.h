@@ -30,7 +30,8 @@ public:
 private:
     enum FIELD_VALUES {
         UNOPENED = 'u',
-        FLAG = 'f'
+        FLAG = 'f',
+        OPENED = 'o'
     };
     QPixmap flag;
     QPixmap unopened_block;
