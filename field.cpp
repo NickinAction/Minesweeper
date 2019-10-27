@@ -18,31 +18,7 @@
 
 Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     this->difficulty = difficulty;
-}
-
-// It is possible to suppress the warning you need to ignore so it won't distract.
-// Like this:
-// void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
-void Field::paintEvent(QPaintEvent *Event) {
-
-    QPainter painter(this);
-    QPixmap flag = QPixmap(":/new/images/flag.png");
-    // And yes, rename the folder pls.
-    //painter.drawPixmap(10,10,50,50, flag);
-
-    painter.fillRect(0, 0, fieldPixelSize, fieldPixelSize, block_color);
-
-    //difficulty = 'h';//temporary
-    // You don't need this one anymore, so you can remove it.
-    // In general, it's better not to leave code on comment for a long time.
-    // You can always retrieve it back from Git. That's what it is for.
-    // Same applies to code comments above and below.
-
     // This code just asksfor switch/case instead.
-    /// Also, why do you find the difficulty and the block size EVERY time we call paintEvent?
-    /// It's not like it can change any time.
-    /// Better to find this value in the class constructor.
-    /// Or even in a separate function that is called from the constructor, if you prefer.
     if (difficulty == 'e'){
         fieldSize = 10;
     }
@@ -55,17 +31,46 @@ void Field::paintEvent(QPaintEvent *Event) {
 
     blockSize = fieldPixelSize/fieldSize;
 
+    for(int i = 0; i < fieldSize; i++) {
+        for(int j = 0; j < fieldSize; j++) {
+            fieldArray[i][j] = 'u';
+        }
+    }
+}
+
+void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
+
+    QPainter painter(this);
+    QPixmap flag = QPixmap(":/new/images/flag.png");
+
     for (int i = 0; i < fieldSize; i++) {
         for (int j = 0; j < fieldSize; j++) {
-            painter.drawRect(blockSize*i, blockSize*j, blockSize, blockSize);
+            switch(fieldArray[i][j]) {
+                case 'u':
+                painter.fillRect(blockSize*i, blockSize*j, blockSize, blockSize, block_color);\
+                painter.drawRect(blockSize*i, blockSize*j, blockSize, blockSize);// will be changed in the future (Pixmap)
+
+
+            }
+
         }
     }
 
     painter.drawPixmap(0, 0, blockSize, blockSize, flag);
-    //QPoint pos = QCursor::pos();
 }
 
 void Field::mousePressEvent(QMouseEvent *e){
+
+    if (e->button() == Qt::LeftButton) {
+
+    } else if (e->button() == Qt::RightButton){
+        if (e->x() >= 0 && e->x() <= 950 && e->y() >= 0 && e->y() <= 950) {
+            mouseEventblockX = e->x()/blockSize;
+            mouseEventblockY = e->y()/blockSize;
+
+            drawflag = true; // REDO THIS
+        }
+    }
+
     qDebug() << e->button() << " x: " << e->x() << " y: " << e->y() << endl;
 }
-
