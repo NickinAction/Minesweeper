@@ -15,6 +15,7 @@
 #include <QCursor>
 #include <QMouseEvent>
 #include <QPixmap>
+#include <random>
 
 Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     this->difficulty = difficulty;
@@ -70,6 +71,14 @@ void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
         }
     }
 
+    for (int i = 0; i < fieldSize; i++) {
+        for (int j = 0; j < fieldSize; j++) {
+            if(hiddenFieldArray[i][j] == MINE) {
+                painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, mine);
+            }
+        }
+    }
+
 
 }
 
@@ -82,6 +91,11 @@ void Field::mousePressEvent(QMouseEvent *e){
         if (withinField(e->x(), e->y())) {
             MEblockX = e->x()/blockSize;
             MEblockY = e->y()/blockSize;
+
+            if(firstClick) {
+                generateHiddenField(MEblockX, MEblockY);
+                firstClick = false;
+            }
 
             if(fieldArray[MEblockX][MEblockY] == UNOPENED) {
                 fieldArray[MEblockX][MEblockY] = OPENED;
@@ -113,6 +127,16 @@ bool Field::withinField(int x, int y) {
     return(x >= 0 && x <= 950 && x >= 0 && y <= 950);
 }
 
-void Field::generateHiddenField() {
-    for(int i = 0; i < )
+void Field::generateHiddenField(int x, int y) {
+    srand (time(nullptr));
+    for(int i = 0; i < mineCount; i++) {
+        int rand1, rand2;
+
+        do {
+            rand1 = rand() % fieldSize;
+            rand2 = rand() % fieldSize;
+        }while(hiddenFieldArray[rand1][rand2] == MINE || (abs(x - rand1) < 2 && abs(rand2 - y) < 2));
+
+        hiddenFieldArray[rand1][rand2] = MINE;
+    }
 }

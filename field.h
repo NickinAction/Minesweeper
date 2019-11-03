@@ -23,25 +23,30 @@ public:
     // Think about making it an enumerator then. This way you can limit the possible values to
     // these three exclusively.
     int fieldSize;
-
     bool drawflag = false;
     char fieldArray[38][38];
-    char hiddenFieldArray[38][38];
+    short int hiddenFieldArray[38][38];
 
 private:
+
     enum FIELD_VALUES {
         UNOPENED = 'u',
         FLAG = 'f',
         OPENED = 'o'
     };
-    const int MINE = -1;
+    const short int MINE = -1;
 
     QPixmap flag;
     QPixmap unopened_block;
     QPixmap mine;
     QPixmap opened_block;
 
+
+    int mineCount;
+    bool firstClick = true;
+
     bool withinField(int x, int y);
+    void generateHiddenField(int x, int y);
 
 };
 
