@@ -40,6 +40,14 @@ private:
     QPixmap unopened_block;
     QPixmap mine;
     QPixmap opened_block;
+    QPixmap number1;
+    QPixmap number2;
+    QPixmap number3;
+    QPixmap number4;
+    QPixmap number5;
+    QPixmap number6;
+    QPixmap number7;
+    QPixmap number8;
 
 
     int mineCount;
@@ -47,6 +55,7 @@ private:
 
     bool withinField(int x, int y);
     void generateHiddenField(int x, int y);
+    void openFieldSection(int x, int y);
 
 };
 
