@@ -39,15 +39,7 @@ private:
     QPixmap flag;
     QPixmap unopened_block;
     QPixmap mine;
-    QPixmap opened_block;
-    QPixmap number1;
-    QPixmap number2;
-    QPixmap number3;
-    QPixmap number4;
-    QPixmap number5;
-    QPixmap number6;
-    QPixmap number7;
-    QPixmap number8;
+    std::vector <QPixmap> number_images;
 
 
     int mineCount;

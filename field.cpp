@@ -20,20 +20,16 @@
 Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     this->difficulty = difficulty;
 
-
     flag = QPixmap(":/images/Minesweeper_flag.svg.png");
     unopened_block = QPixmap(":/images/Minesweeper_unopened_square.svg.png");
     mine = QPixmap(":/images/Gnome-gnomine.png");
-    opened_block = QPixmap(":/images/Minesweeper_pressed-square.svg.png");
-    number1 = QPixmap(":/images/number1.png");
-    number2 = QPixmap(":/images/number2.png");
-    number3 = QPixmap(":/images/number3.png");
-    number4 = QPixmap(":/images/number4.png");
-    number5 = QPixmap(":/images/number5.png");
-    number6 = QPixmap(":/images/number6.png");
-    number7 = QPixmap(":/images/number7.png");
-    number8 = QPixmap(":/images/number8.png");
 
+    number_images.push_back(QPixmap(":/images/Minesweeper_pressed-square.svg.png"));
+
+    for (int i = 1; i <= 8; i++) {
+        std::string number_images_address = ":/images/number" + std::string(1, char('0' + i)) + ".png";
+        number_images.push_back(QPixmap(QString::fromStdString(number_images_address)));
+    }
 
     // This code just asksfor switch/case instead.
     if (difficulty == 'e'){
@@ -63,6 +59,14 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
 
     QPainter painter(this);
+    if (firstClick) { // field hasn't been generated yet
+        for (int i = 0; i < fieldSize; i++) {
+            for (int j = 0; j < fieldSize; j++) {
+                painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, unopened_block);
+            }
+        }
+        return;
+    }
     for (int i = 0; i < fieldSize; i++) {
         for (int j = 0; j < fieldSize; j++) {
             switch(fieldArray[i][j]) {
@@ -73,7 +77,8 @@ void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
                     painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, flag);
                 break;
             default: //opened
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, opened_block);
+                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1,
+                                       number_images[hiddenFieldArray[i][j]]);
 
             }
         }
@@ -81,35 +86,14 @@ void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
 
     for (int i = 0; i < fieldSize; i++) {
         for (int j = 0; j < fieldSize; j++) {
-            switch(hiddenFieldArray[i][j]) {
-                case '1':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number1);
-                    break;
-                case '2':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number2);
-                    break;
-                case '3':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number3);
-                    break;
-                case '4':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number4);
-                    break;
-                case '5':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number5);
-                    break;
-                case '6':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number6);
-                    break;
-                case '7':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number7);
-                    break;
-                case '8':
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, number8);
-                    break;
-
-            }
             if(hiddenFieldArray[i][j] == MINE) {
                 painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, mine);
+                continue;
+            }
+            else {
+                qDebug() << hiddenFieldArray[i][j] << endl;
+                painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1,
+                               number_images[hiddenFieldArray[i][j]]);
             }
         }
     }
@@ -168,6 +152,12 @@ bool Field::withinField(int x, int y) {
 
 void Field::generateHiddenField(int x, int y) {
     srand (time(nullptr));
+
+    for (int y = 0; y < fieldSize; y ++) {
+        for (int x = 0; x < fieldSize; x++) {
+            hiddenFieldArray[y][x] = 0;
+        }
+    }
     for(int i = 0; i < mineCount; i++) {
         int rand1, rand2;
 
@@ -177,55 +167,66 @@ void Field::generateHiddenField(int x, int y) {
         }while(hiddenFieldArray[rand1][rand2] == MINE || (abs(x - rand1) < 2 && abs(rand2 - y) < 2));
 
         hiddenFieldArray[rand1][rand2] = MINE;
+        assert(hiddenFieldArray[rand1][rand2] == -1);
     }
 
-    int numberOfMines;
-    for (int i = 0; i < fieldSize; i++) {
-        for(int j = 0; j < fieldSize; i++) {
+    short int numberOfMines;
+    for (int y = 0; y < fieldSize; y++) {
+        for(int x = 0; x < fieldSize; x++) {
             numberOfMines = 0;
-            if (j != fieldSize) { //
-                if (hiddenFieldArray[i+1][j] == MINE) { // DOWN
+            if (hiddenFieldArray[y][x] == MINE) {
+                continue;
+            }
+            qDebug() << x << " " << y << " " << fieldSize << endl;
+            if (y != fieldSize - 1) {
+                if (hiddenFieldArray[y+1][x] == MINE) { // DOWN
                     numberOfMines++;
                 }
             }
-            if (j != 0) {
-                if (hiddenFieldArray[i-1][j] == MINE) { // UP --
+            if (y != 0) {
+                if (hiddenFieldArray[y-1][x] == MINE) { // UP --
                     numberOfMines++;
                 }
             }
-            if (i != fieldSize) {
-                if (hiddenFieldArray[i][j+1] == MINE) { // RIGHT
+            if (x != fieldSize - 1) {
+                if (hiddenFieldArray[y][x+1] == MINE) { // RIGHT
                     numberOfMines++;
                 }
             }
-            if (i != 0) {
-                if (hiddenFieldArray[i][j-1] == MINE) { // LEFT--
+            if (x != 0) {
+                if (hiddenFieldArray[y][x-1] == MINE) { // LEFT--
                     numberOfMines++;
                 }
             }
-            if (i != fieldSize && j != 0) {
-                if (hiddenFieldArray[i-1][j+1] == MINE) { // UP-RIGHT--
+            if (x != fieldSize - 1 && y != 0) {
+                if (hiddenFieldArray[y-1][x+1] == MINE) { // UP-RIGHT--
                     numberOfMines++;
                 }
             }
-            if (i != fieldSize && j != fieldSize) {
-                if (hiddenFieldArray[i+1][j+1] == MINE) { // DOWN-RIGHT
+            if (x != fieldSize - 1 && y != fieldSize - 1) {
+                if (hiddenFieldArray[y+1][x+1] == MINE) { // DOWN-RIGHT
                     numberOfMines++;
                 }
             }
-            if (i != 0 && j != 0) {
-                if (hiddenFieldArray[i-1][j-1] == MINE) { // UP-LEFT--
+            if (x != 0 && y != 0) {
+                if (hiddenFieldArray[y-1][x-1] == MINE) { // UP-LEFT--
                     numberOfMines++;
                 }
             }
-            if (i != 0 && j != fieldSize) {
-                if (hiddenFieldArray[i+1][j-1] == MINE) { // DOWN-LEFT--
+            if (x != 0 && y != fieldSize - 1) {
+                if (hiddenFieldArray[y+1][x-1] == MINE) { // DOWN-LEFT--
                     numberOfMines++;
                 }
             }
 
-            hiddenFieldArray[i][j] = numberOfMines;
+            hiddenFieldArray[y][x] = numberOfMines;
         }
 
+    }
+    for (int y = 0; y < fieldSize; y++) {
+        for (int x = 0; x < fieldSize; x++) {
+            qDebug() << hiddenFieldArray[y][x] << " ";
+        }
+        qDebug() << endl;
     }
 }
