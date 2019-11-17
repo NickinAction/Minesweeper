@@ -32,8 +32,19 @@ private:
     enum FIELD_VALUES {
         UNOPENED = 'u',
         FLAG = 'f',
-        OPENED = 'o'
+        OPENED = 'o',
+        OPENED_MINE = 'm'
     };
+
+    char game_status = 'n';
+    enum GAME_STATUS {
+        NOT_STARTED = 'n',
+        ONGOING = 'o',
+        PAUSED = 'p',
+        LOST = 'l',
+        WON = 'w'
+    };
+
     const short int MINE = -1;
 
     QPixmap flag;
@@ -43,7 +54,6 @@ private:
 
 
     int mineCount;
-    bool firstClick = true;
 
     bool withinField(int x, int y);
     void generateHiddenField(int x, int y);

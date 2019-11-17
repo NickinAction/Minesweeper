@@ -59,7 +59,7 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
 
     QPainter painter(this);
-    if (firstClick) { // field hasn't been generated yet
+    if (game_status == NOT_STARTED) { // field hasn't been generated yet
         for (int i = 0; i < fieldSize; i++) {
             for (int j = 0; j < fieldSize; j++) {
                 painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, unopened_block);
@@ -111,13 +111,17 @@ void Field::mousePressEvent(QMouseEvent *e){
             MEblockX = e->x()/blockSize;
             MEblockY = e->y()/blockSize;
 
-            if(firstClick) {
+            if(game_status == NOT_STARTED) {
                 generateHiddenField(MEblockX, MEblockY);
-                firstClick = false;
+                game_status = ONGOING;
             }
 
             if(fieldArray[MEblockX][MEblockY] == UNOPENED) {
                 fieldArray[MEblockX][MEblockY] = OPENED;
+            }
+
+            if (hiddenFieldArray[MEblockX][MEblockY] == MINE) {
+
             }
 
         }
