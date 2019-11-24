@@ -56,7 +56,7 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
 }
 
-void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
+void Field::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
     if (game_status == NOT_STARTED) { // field hasn't been generated yet
@@ -78,7 +78,7 @@ void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
                 break;
             default: //opened
                     painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1,
-                                       number_images[hiddenFieldArray[i][j]]);
+                                       number_images[unsigned(hiddenFieldArray[i][j])]);
 
             }
         }
@@ -93,7 +93,7 @@ void Field::paintEvent(__attribute__((unused))QPaintEvent *Event) {
             else {
                 qDebug() << hiddenFieldArray[i][j] << endl;
                 painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1,
-                               number_images[hiddenFieldArray[i][j]]);
+                               number_images[unsigned(hiddenFieldArray[i][j])]);
             }
         }
     }
@@ -155,7 +155,7 @@ bool Field::withinField(int x, int y) {
 }
 
 void Field::generateHiddenField(int x, int y) {
-    srand (time(nullptr));
+    srand (unsigned(time(nullptr)));
 
     for (int y = 0; y < fieldSize; y ++) {
         for (int x = 0; x < fieldSize; x++) {
@@ -171,7 +171,7 @@ void Field::generateHiddenField(int x, int y) {
         }while(hiddenFieldArray[rand1][rand2] == MINE || (abs(x - rand1) < 2 && abs(rand2 - y) < 2));
 
         hiddenFieldArray[rand1][rand2] = MINE;
-        assert(hiddenFieldArray[rand1][rand2] == -1);
+        assert(hiddenFieldArray[rand1][rand2] == MINE);
     }
 
     short int numberOfMines;
