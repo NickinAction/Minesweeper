@@ -17,12 +17,14 @@ public:
     QColor field_color = QColor(187,187, 187, 255); // color of the field
 
     const int fieldPixelSize = 950; //the pixel size of the entire field
-    int blockSize; // the size of one block on the field
+    int blockWidth; // the size of one block on the field
+    int blockHeight;
 
     char difficulty; //can be 'e' for easy, 'm' for medium and 'h' for hard.
     // Think about making it an enumerator then. This way you can limit the possible values to
     // these three exclusively.
-    int fieldSize;
+    int fieldWidth;
+    int fieldHeight;
     bool drawflag = false;
     char fieldArray[38][38];
     short int hiddenFieldArray[38][38];

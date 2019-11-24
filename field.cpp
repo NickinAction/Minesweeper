@@ -33,22 +33,26 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
     // This code just asksfor switch/case instead.
     if (difficulty == 'e'){
-        fieldSize = 10;
+        fieldWidth = 10;
+        fieldHeight = 10;
         mineCount = 12;
     }
     else if (difficulty == 'm') {
-        fieldSize = 25;
+        fieldWidth = 25;
+        fieldHeight = 25;
         mineCount = 94;
     }
     else if (difficulty == 'h') {
-        fieldSize = 38;
+        fieldWidth = 38;
+        fieldHeight = 38;
         mineCount = 216;
     }
 
-    blockSize = fieldPixelSize/fieldSize;
+    blockWidth = fieldPixelSize/fieldWidth;
+    blockHeight = fieldPixelSize/fieldHeight;
 
-    for(int i = 0; i < fieldSize; i++) {
-        for(int j = 0; j < fieldSize; j++) {
+    for(int i = 0; i < fieldHeight; i++) {
+        for(int j = 0; j < fieldWidth; j++) {
             fieldArray[i][j] = UNOPENED;
         }
     }
@@ -57,43 +61,44 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 }
 
 void Field::paintEvent(QPaintEvent *) {
-
     QPainter painter(this);
+    auto dp = [&](int i, int j, QPixmap& pm) {
+      painter.drawPixmap(blockWidth*i+1, blockHeight*j+1, blockWidth-1, blockHeight-1, pm);
+    };
+
     if (game_status == NOT_STARTED) { // field hasn't been generated yet
-        for (int i = 0; i < fieldSize; i++) {
-            for (int j = 0; j < fieldSize; j++) {
-                painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, unopened_block);
+        for (int i = 0; i < fieldHeight; i++) {
+            for (int j = 0; j < fieldWidth; j++) {
+                dp(i,j,unopened_block);
             }
         }
         return;
     }
-    for (int i = 0; i < fieldSize; i++) {
-        for (int j = 0; j < fieldSize; j++) {
+    for (int i = 0; i < fieldHeight; i++) {
+        for (int j = 0; j < fieldWidth; j++) {
             switch(fieldArray[i][j]) {
                 case UNOPENED:
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, unopened_block);
+                    dp(i,j,unopened_block);
                 break;
                 case FLAG:
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, flag);
+                    dp(i,j,flag);
                 break;
             default: //opened
-                    painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1,
-                                       number_images[unsigned(hiddenFieldArray[i][j])]);
+                    dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
 
             }
         }
     }
 
-    for (int i = 0; i < fieldSize; i++) {
-        for (int j = 0; j < fieldSize; j++) {
+    for (int i = 0; i < fieldHeight; i++) {
+        for (int j = 0; j < fieldWidth; j++) {
             if(hiddenFieldArray[i][j] == MINE) {
-                painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1, mine);
+                dp(i,j,mine);
                 continue;
             }
             else {
                 qDebug() << hiddenFieldArray[i][j] << endl;
-                painter.drawPixmap(blockSize*i+1, blockSize*j+1, blockSize-1, blockSize-1,
-                               number_images[unsigned(hiddenFieldArray[i][j])]);
+                dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
             }
         }
     }
@@ -108,8 +113,8 @@ void Field::mousePressEvent(QMouseEvent *e){
 
     if (e->button() == Qt::LeftButton) {
         if (withinField(e->x(), e->y())) {
-            MEblockX = e->x()/blockSize;
-            MEblockY = e->y()/blockSize;
+            MEblockX = e->x()/blockWidth;
+            MEblockY = e->y()/blockHeight;
 
             if(game_status == NOT_STARTED) {
                 generateHiddenField(MEblockX, MEblockY);
@@ -128,8 +133,8 @@ void Field::mousePressEvent(QMouseEvent *e){
 
     } else if (e->button() == Qt::RightButton){
         if (withinField(e->x(), e->y())) {
-            MEblockX = e->x()/blockSize;
-            MEblockY = e->y()/blockSize;
+            MEblockX = e->x()/blockWidth;
+            MEblockY = e->y()/blockHeight;
 
             if(fieldArray[MEblockX][MEblockY] == FLAG) {
                 fieldArray[MEblockX][MEblockY] = UNOPENED;
@@ -154,11 +159,11 @@ bool Field::withinField(int x, int y) {
     return(x >= 0 && x <= 950 && x >= 0 && y <= 950);
 }
 
-void Field::generateHiddenField(int x, int y) {
+void Field::generateHiddenField(int x_click, int y_click) {
     srand (unsigned(time(nullptr)));
 
-    for (int y = 0; y < fieldSize; y ++) {
-        for (int x = 0; x < fieldSize; x++) {
+    for (int y = 0; y < fieldHeight; y ++) {
+        for (int x = 0; x < fieldWidth; x++) {
             hiddenFieldArray[y][x] = 0;
         }
     }
@@ -166,23 +171,22 @@ void Field::generateHiddenField(int x, int y) {
         int rand1, rand2;
 
         do {
-            rand1 = rand() % fieldSize;
-            rand2 = rand() % fieldSize;
-        }while(hiddenFieldArray[rand1][rand2] == MINE || (abs(x - rand1) < 2 && abs(rand2 - y) < 2));
+            rand1 = rand() % fieldWidth;
+            rand2 = rand() % fieldHeight;
+        }while(hiddenFieldArray[rand1][rand2] == MINE || (abs(x_click - rand1) < 2 && abs(rand2 - y_click) < 2));
 
         hiddenFieldArray[rand1][rand2] = MINE;
         assert(hiddenFieldArray[rand1][rand2] == MINE);
     }
 
     short int numberOfMines;
-    for (int y = 0; y < fieldSize; y++) {
-        for(int x = 0; x < fieldSize; x++) {
+    for (int y = 0; y < fieldHeight; y++) {
+        for(int x = 0; x < fieldWidth; x++) {
             numberOfMines = 0;
             if (hiddenFieldArray[y][x] == MINE) {
                 continue;
             }
-            qDebug() << x << " " << y << " " << fieldSize << endl;
-            if (y != fieldSize - 1) {
+            if (y != fieldHeight - 1) {
                 if (hiddenFieldArray[y+1][x] == MINE) { // DOWN
                     numberOfMines++;
                 }
@@ -192,7 +196,7 @@ void Field::generateHiddenField(int x, int y) {
                     numberOfMines++;
                 }
             }
-            if (x != fieldSize - 1) {
+            if (x != fieldWidth - 1) {
                 if (hiddenFieldArray[y][x+1] == MINE) { // RIGHT
                     numberOfMines++;
                 }
@@ -202,12 +206,12 @@ void Field::generateHiddenField(int x, int y) {
                     numberOfMines++;
                 }
             }
-            if (x != fieldSize - 1 && y != 0) {
+            if (x != fieldWidth - 1 && y != 0) {
                 if (hiddenFieldArray[y-1][x+1] == MINE) { // UP-RIGHT--
                     numberOfMines++;
                 }
             }
-            if (x != fieldSize - 1 && y != fieldSize - 1) {
+            if (x != fieldWidth - 1 && y != fieldHeight - 1) {
                 if (hiddenFieldArray[y+1][x+1] == MINE) { // DOWN-RIGHT
                     numberOfMines++;
                 }
@@ -217,7 +221,7 @@ void Field::generateHiddenField(int x, int y) {
                     numberOfMines++;
                 }
             }
-            if (x != 0 && y != fieldSize - 1) {
+            if (x != 0 && y != fieldHeight - 1) {
                 if (hiddenFieldArray[y+1][x-1] == MINE) { // DOWN-LEFT--
                     numberOfMines++;
                 }
@@ -227,8 +231,8 @@ void Field::generateHiddenField(int x, int y) {
         }
 
     }
-    for (int y = 0; y < fieldSize; y++) {
-        for (int x = 0; x < fieldSize; x++) {
+    for (int y = 0; y < fieldHeight; y++) {
+        for (int x = 0; x < fieldWidth; x++) {
             qDebug() << hiddenFieldArray[y][x] << " ";
         }
         qDebug() << endl;
