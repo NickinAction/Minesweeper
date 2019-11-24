@@ -1,4 +1,4 @@
-  #include "field.h"
+#include "field.h"
 #include <QtWidgets>
 #include "mainwindow.h"
 #include <iostream>
@@ -69,22 +69,24 @@ void Field::paintEvent(QPaintEvent *) {
         }
         return;
     }
-    for (int i = 0; i < fieldHeight; i++) {
-        for (int j = 0; j < fieldWidth; j++) {
-            switch(fieldArray[i][j]) {
-                case OPENED:
-                    dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
-                break;
-                case FLAG:
-                    dp(i,j,flag);
-                break;
-            default: //unopened
-                    dp(i,j,unopened_block);
+    else if (game_status == ONGOING) {
+        for (int i = 0; i < fieldHeight; i++) {
+            for (int j = 0; j < fieldWidth; j++) {
+                switch(fieldArray[i][j]) {
+                    case OPENED:
+                        dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
+                    break;
+                    case FLAG:
+                        dp(i,j,flag);
+                    break;
+                default: //unopened
+                        dp(i,j,unopened_block);
 
+                }
             }
         }
     }
-
+    /*
     for (int i = 0; i < fieldHeight; i++) {
         for (int j = 0; j < fieldWidth; j++) {
             if(hiddenFieldArray[i][j] == MINE) {
@@ -97,6 +99,7 @@ void Field::paintEvent(QPaintEvent *) {
             }
         }
     }
+    */
 
 
 }
@@ -121,7 +124,8 @@ void Field::mousePressEvent(QMouseEvent *e){
             }
 
             if (hiddenFieldArray[MEblockX][MEblockY] == MINE) {
-
+                fieldArray[MEblockX][MEblockY] = OPENED_MINE;
+                game_status = LOST;
             }
 
         }
