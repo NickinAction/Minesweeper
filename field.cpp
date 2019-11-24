@@ -1,9 +1,4 @@
   #include "field.h"
-#include <QTime>
-#include <QTimer>
-// Will you require timers both in MainWindow and Field?
-// If think that field doesn't really need it.
-// If not, you can remove extra imports.
 #include <QtWidgets>
 #include "mainwindow.h"
 #include <iostream>
@@ -151,12 +146,12 @@ void Field::mousePressEvent(QMouseEvent *e){
 }
 
 void Field::openFieldSection(int x, int y) { //wave agl
-
+    ///TODO
 }
 
 
 bool Field::withinField(int x, int y) {
-    return(x >= 0 && x <= 950 && x >= 0 && y <= 950);
+    return(x >= 0 && x <= fieldPixelSize && x >= 0 && y <= fieldPixelSize);
 }
 
 void Field::generateHiddenField(int x_click, int y_click) {
