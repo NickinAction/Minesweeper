@@ -1,6 +1,6 @@
 Minesweeper replication project. Made on Qt.
 
-# TODO
+# TODO:
 
 - Make a cool README
 - Cheat codes for game testing
