@@ -9,3 +9,5 @@ Minesweeper replication project. Made on Qt.
 - Game winning
 - Flag counting
 - Timer
+- Reset button
+
