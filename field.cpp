@@ -72,14 +72,14 @@ void Field::paintEvent(QPaintEvent *) {
     for (int i = 0; i < fieldHeight; i++) {
         for (int j = 0; j < fieldWidth; j++) {
             switch(fieldArray[i][j]) {
-                case UNOPENED:
-                    dp(i,j,unopened_block);
+                case OPENED:
+                    dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
                 break;
                 case FLAG:
                     dp(i,j,flag);
                 break;
-            default: //opened
-                    dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
+            default: //unopened
+                    dp(i,j,unopened_block);
 
             }
         }
