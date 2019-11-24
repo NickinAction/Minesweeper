@@ -117,15 +117,16 @@ void Field::mousePressEvent(QMouseEvent *e){
             if(game_status == NOT_STARTED) {
                 generateHiddenField(MEblockX, MEblockY);
                 game_status = ONGOING;
+                openFieldSection(MEblockX, MEblockY);
             }
 
-            if(fieldArray[MEblockX][MEblockY] == UNOPENED) {
-                fieldArray[MEblockX][MEblockY] = OPENED;
-            }
-
-            if (hiddenFieldArray[MEblockX][MEblockY] == MINE) {
+            else if (hiddenFieldArray[MEblockX][MEblockY] == MINE) {
                 fieldArray[MEblockX][MEblockY] = OPENED_MINE;
                 game_status = LOST;
+            }
+
+            else if(fieldArray[MEblockX][MEblockY] == UNOPENED) {
+                openFieldSection(MEblockX, MEblockY);
             }
 
         }
@@ -149,8 +150,67 @@ void Field::mousePressEvent(QMouseEvent *e){
     this->update();
 }
 
-void Field::openFieldSection(int x, int y) { //wave agl
-    ///TODO
+void Field::openFieldSection(int start_x, int start_y) { //wave agl
+    class Point {
+    public:
+        int x;
+        int y;
+        Point(int x, int y) {
+            this->x = x;
+            this->y = y;
+        }
+    };
+
+    using std::queue;
+
+    queue <Point> cells;
+
+    cells.push(Point(start_x,start_y));
+
+    while(!cells.empty()) {
+        Point cur_point = cells.front();
+        int x = cur_point.x;
+        int y = cur_point.y;
+        cells.pop();
+
+        if (hiddenFieldArray[x][y] == MINE) {
+            throw "Found a mine while block opening";
+        }
+        if(fieldArray[x][y] == OPENED || (hiddenFieldArray[x][y] != 0)) {
+            fieldArray[x][y] = OPENED;
+            continue;
+        }
+
+        if (y != fieldHeight - 1) { // DOWN
+            cells.push(Point(x, y + 1));
+        }
+        if (y != 0) { // UP
+            cells.push(Point(x, y - 1));
+        }
+        if (x != fieldWidth - 1) { // RIGHT
+            cells.push(Point(x + 1, y));
+        }
+        if (x != 0) { // LEFT
+            cells.push(Point(x - 1, y));
+        }
+        if (x != fieldWidth - 1 && y != 0) { // UP-RIGHT
+            cells.push(Point(x + 1, y - 1));
+        }
+        if (x != fieldWidth - 1 && y != fieldHeight - 1) { // DOWN-RIGHT
+            cells.push(Point(x + 1, y + 1));
+        }
+        if (x != 0 && y != 0) {// UP-LEFT
+            cells.push(Point(x - 1, y - 1));
+        }
+        if (x != 0 && y != fieldHeight - 1) { // DOWN-LEFT
+            cells.push(Point(x - 1, y + 1));
+        }
+
+        fieldArray[x][y] = OPENED;
+    }
+
+
+
 }
 
 
