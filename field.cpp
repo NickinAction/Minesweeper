@@ -99,7 +99,7 @@ void Field::paintEvent(QPaintEvent *) {
                 continue;
             }
             else {
-                qDebug() << hiddenFieldArray[y][x] << endl;
+                //qDebug() << hiddenFieldArray[y][x] << endl;
                 //dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
             }
         }
@@ -127,7 +127,7 @@ void Field::mousePressEvent(QMouseEvent *e){
         }
         else if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
             visibleFieldArray[MEblockY][MEblockX] = OPENED_MINE;
-            game_status = LOST;
+            loseGame();
         }
         else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
             openFieldSection(MEblockY, MEblockX);
@@ -143,9 +143,9 @@ void Field::mousePressEvent(QMouseEvent *e){
         }
     }
 
-    else if (e->button() == Qt::MiddleButton) {
+    else if (e->button() == Qt::MidButton) {
         if(hiddenFieldArray[MEblockY][MEblockX] == adjacentFlagCount(MEblockX, MEblockY)) {
-            openFieldSection(MEblockX, MEblockY);
+            openFieldSection(MEblockX, MEblockY, true);
         }
     }
 
@@ -199,8 +199,11 @@ short Field::adjacentFlagCount(int cellX, int cellY) {
     return flagCount;
 }
 
+void Field::loseGame() {
+    game_status = LOST;
+}
 
-void Field::openFieldSection(int start_x, int start_y) { //wave agl
+void Field::openFieldSection(int start_x, int start_y, bool middleClick) { //wave agl
     class Point {
     public:
         int x;
@@ -217,18 +220,33 @@ void Field::openFieldSection(int start_x, int start_y) { //wave agl
 
     cells.push(Point(start_x,start_y));
 
+    bool ignoreIfNumber = middleClick;
+
     while(!cells.empty()) {
         Point cur_point = cells.front();
         int x = cur_point.x;
         int y = cur_point.y;
         cells.pop();
 
-        if (hiddenFieldArray[y][x] == MINE) {
-            throw "Found a mine while block opening";
+
+        if (visibleFieldArray[y][x] == FLAG) {
+            continue;
+        }
+        else if (hiddenFieldArray[y][x] == MINE && middleClick) {
+            loseGame();
+            return;
+        }
+        else if (hiddenFieldArray[y][x] == MINE) {
+            throw std::runtime_error("Found a mine while block opening");
         }
         if(visibleFieldArray[y][x] == OPENED || (hiddenFieldArray[y][x] != 0)) {
             visibleFieldArray[y][x] = OPENED;
-            continue;
+            if (ignoreIfNumber) {
+
+                ignoreIfNumber = false;
+            } else {
+                continue;
+            }
         }
 
         if (y != fieldHeight - 1) { // DOWN
@@ -261,11 +279,9 @@ void Field::openFieldSection(int start_x, int start_y) { //wave agl
 
 }
 
-
 bool Field::withinField(int x, int y) {
     return(x >= 0 && x <= fieldPixelSize && x >= 0 && y <= fieldPixelSize);
 }
-
 
 void Field::generateHiddenField(int x_click, int y_click) {
     srand (unsigned(time(nullptr)));
@@ -338,11 +354,5 @@ void Field::generateHiddenField(int x_click, int y_click) {
             hiddenFieldArray[y][x] = numberOfMines;
         }
 
-    }
-    for (int y = 0; y < fieldHeight; y++) {
-        for (int x = 0; x < fieldWidth; x++) {
-            qDebug() << hiddenFieldArray[y][x] << " ";
-        }
-        qDebug() << endl;
     }
 }

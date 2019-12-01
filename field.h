@@ -55,7 +55,10 @@ private:
 
     bool withinField(int x, int y);
     void generateHiddenField(int x, int y);
-    void openFieldSection(int x, int y);
+    void openFieldSection(int x, int y, bool middleClick = false);
+    short adjacentFlagCount(int cellX, int cellY);
+
+    void loseGame();
 
 };
 
