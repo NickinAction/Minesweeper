@@ -111,45 +111,94 @@ void Field::mousePressEvent(QMouseEvent *e){
     int MEblockX = e->x()/blockWidth; //mouse event block
     int MEblockY = e->y()/blockHeight;
 
+
+    if (!withinField(e->x(), e->y())) {
+        return;
+    }
+
     if (e->button() == Qt::LeftButton) {
-        if (withinField(e->x(), e->y())) {
-
-            if(game_status == NOT_STARTED) {
-                generateHiddenField(MEblockY, MEblockX);
-                game_status = ONGOING;
-                openFieldSection(MEblockX, MEblockY);
-            }
-
-            if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-                visibleFieldArray[MEblockY][MEblockX] = OPENED;
-            }
-            else if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
-                visibleFieldArray[MEblockY][MEblockX] = OPENED_MINE;
-                game_status = LOST;
-            }
-
-            else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-                openFieldSection(MEblockY, MEblockX);
-            }
-
+        if(game_status == NOT_STARTED) {
+            generateHiddenField(MEblockY, MEblockX);
+            game_status = ONGOING;
+            openFieldSection(MEblockX, MEblockY);
         }
+        if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+            visibleFieldArray[MEblockY][MEblockX] = OPENED;
+        }
+        else if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
+            visibleFieldArray[MEblockY][MEblockX] = OPENED_MINE;
+            game_status = LOST;
+        }
+        else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+            openFieldSection(MEblockY, MEblockX);
+        }
+    }
 
-    } else if (e->button() == Qt::RightButton){
-        if (withinField(e->x(), e->y())) {
+    else if (e->button() == Qt::RightButton){
+        if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
+            visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
+        }
+        else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+            visibleFieldArray[MEblockY][MEblockX] = FLAG;
+        }
+    }
 
-            if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
-                visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
-            }
-            else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-                visibleFieldArray[MEblockY][MEblockX] = FLAG;
-            }
-
+    else if (e->button() == Qt::MiddleButton) {
+        if(hiddenFieldArray[MEblockY][MEblockX] == adjacentFlagCount(MEblockX, MEblockY)) {
+            openFieldSection(MEblockX, MEblockY);
         }
     }
 
     qDebug() << e->button() << " x: " << e->x() << " y: " << e->y() << endl;
     this->update();
 }
+
+short Field::adjacentFlagCount(int cellX, int cellY) {
+    short flagCount = 0;
+    if (cellY != fieldHeight - 1) {
+        if (visibleFieldArray[cellY+1][cellX] == FLAG) { // DOWN
+            flagCount++;
+        }
+    }
+    if (cellY != 0) {
+        if (visibleFieldArray[cellY-1][cellX] == FLAG) { // UP --
+            flagCount++;
+        }
+    }
+    if (cellX != fieldWidth - 1) {
+        if (visibleFieldArray[cellY][cellX+1] == FLAG) { // RIGHT
+            flagCount++;
+        }
+    }
+    if (cellX != 0) {
+        if (visibleFieldArray[cellY][cellX-1] == FLAG) { // LEFT--
+            flagCount++;
+        }
+    }
+    if (cellX != fieldWidth - 1 && cellY != 0) {
+        if (visibleFieldArray[cellY-1][cellX+1] == FLAG) { // UP-RIGHT--
+            flagCount++;
+        }
+    }
+    if (cellX != fieldWidth - 1 && cellY != fieldHeight - 1) {
+        if (visibleFieldArray[cellY+1][cellX+1] == FLAG) { // DOWN-RIGHT
+            flagCount++;
+        }
+    }
+    if (cellX != 0 && cellY != 0) {
+        if (visibleFieldArray[cellY-1][cellX-1] == FLAG) { // UP-LEFT--
+            flagCount++;
+        }
+    }
+    if (cellX != 0 && cellY != fieldHeight - 1) {
+        if (visibleFieldArray[cellY+1][cellX-1] == FLAG) { // DOWN-LEFT--
+            flagCount++;
+        }
+    }
+
+    return flagCount;
+}
+
 
 void Field::openFieldSection(int start_x, int start_y) { //wave agl
     class Point {
