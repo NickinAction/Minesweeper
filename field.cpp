@@ -1,4 +1,4 @@
- #include "field.h"
+#include "field.h"
 #include "mainwindow.h"
 
 #include <iostream>
@@ -90,11 +90,12 @@ void Field::paintEvent(QPaintEvent *) {
             default: //unopened
                     dp(y,x,unopened_block);
 
+                }
             }
         }
     }
 
-    for (int y = 0; y < fieldHeight; y++) {
+  for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
             if(hiddenFieldArray[y][x] == MINE) {
                 //dp(i,j,mine);
@@ -119,14 +120,19 @@ void Field::mousePressEvent(QMouseEvent *e){
             if(game_status == NOT_STARTED) {
                 generateHiddenField(MEblockY, MEblockX);
                 game_status = ONGOING;
+                openFieldSection(MEblockX, MEblockY);
             }
 
             if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
                 visibleFieldArray[MEblockY][MEblockX] = OPENED;
             }
+            else if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
+                fieldArray[MEblockY][MEblockX] = OPENED_MINE;
+                game_status = LOST;
+            }
 
-            if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
-
+            else if(fieldArray[MEblockY][MEblockX] == UNOPENED) {
+                openFieldSection(MEblockY, MEblockX);
             }
 
         }
@@ -148,9 +154,65 @@ void Field::mousePressEvent(QMouseEvent *e){
     this->update();
 }
 
+void Field::openFieldSection(int start_x, int start_y) { //wave agl
+    class Point {
+    public:
+        int x;
+        int y;
+        Point(int x, int y) {
+            this->x = x;
+            this->y = y;
+        }
+    };
 
-void Field::openFieldSection(int x, int y) { //wave agl
-    ///TODO
+    using std::queue;
+
+    queue <Point> cells;
+
+    cells.push(Point(start_x,start_y));
+
+    while(!cells.empty()) {
+        Point cur_point = cells.front();
+        int x = cur_point.x;
+        int y = cur_point.y;
+        cells.pop();
+
+        if (hiddenFieldArray[y][x] == MINE) {
+            throw "Found a mine while block opening";
+        }
+        if(visibleFieldArray[y][x] == OPENED || (hiddenFieldArray[y][x] != 0)) {
+            fieldArray[y][x] = OPENED;
+            continue;
+        }
+
+        if (y != fieldHeight - 1) { // DOWN
+            cells.push(Point(x, y + 1));
+        }
+        if (y != 0) { // UP
+            cells.push(Point(x, y - 1));
+        }
+        if (x != fieldWidth - 1) { // RIGHT
+            cells.push(Point(x + 1, y));
+        }
+        if (x != 0) { // LEFT
+            cells.push(Point(x - 1, y));
+        }
+        if (x != fieldWidth - 1 && y != 0) { // UP-RIGHT
+            cells.push(Point(x + 1, y - 1));
+        }
+        if (x != fieldWidth - 1 && y != fieldHeight - 1) { // DOWN-RIGHT
+            cells.push(Point(x + 1, y + 1));
+        }
+        if (x != 0 && y != 0) {// UP-LEFT
+            cells.push(Point(x - 1, y - 1));
+        }
+        if (x != 0 && y != fieldHeight - 1) { // DOWN-LEFT
+            cells.push(Point(x - 1, y + 1));
+        }
+
+        fieldArray[y][x] = OPENED;
+    }
+
 }
 
 
