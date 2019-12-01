@@ -1,37 +1,36 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include <QObject>
-#include <QWidget>
 #include <QTime>
 #include <QTimer>
+#include <QObject>
+#include <QWidget>
 
 class Field : public QWidget {
 
 public:
+
     explicit Field(QWidget *parent = nullptr, char difficulty = 'e');
-    void mousePressEvent(QMouseEvent *event) override;
-    void paintEvent(QPaintEvent *Event) override;
-
-    QColor block_color = QColor(170, 170, 170, 255); // color of the blocks on the field
-    QColor field_color = QColor(187,187, 187, 255); // color of the field
-
-    const int fieldPixelSize = 950; //the pixel size of the entire field
-    int blockWidth; // the size of one block on the field
-    int blockHeight;
-
-    char difficulty; //can be 'e' for easy, 'm' for medium and 'h' for hard.
-    // Think about making it an enumerator then. This way you can limit the possible values to
-    // these three exclusively.
-    int fieldWidth;
-    int fieldHeight;
-    bool drawflag = false;
-    char fieldArray[38][38];
-    short int hiddenFieldArray[38][38];
 
 private:
 
-    enum FIELD_VALUES {
+    void mousePressEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *Event) override;
+
+    const int fieldPixelSize = 950; //the pixel size of the entire field
+    // TODO: allow the whole field to be non-square, too.
+
+    int blockWidth; // the size of one block on the field
+    int blockHeight;
+
+    int fieldWidth;
+    int fieldHeight;
+    int mineCount;
+    bool drawflag = false;
+    char visibleFieldArray[38][38]; // maximum size that we may need.
+    short int hiddenFieldArray[38][38];
+
+    enum VISIBLE_FIELD_VALUES {
         UNOPENED = 'u',
         FLAG = 'f',
         OPENED = 'o',
@@ -53,9 +52,6 @@ private:
     QPixmap unopened_block;
     QPixmap mine;
     std::vector <QPixmap> number_images;
-
-
-    int mineCount;
 
     bool withinField(int x, int y);
     void generateHiddenField(int x, int y);
