@@ -1,16 +1,19 @@
-  #include "field.h"
-#include <QtWidgets>
+ #include "field.h"
 #include "mainwindow.h"
+
 #include <iostream>
-#include <queue>
+#include <random>
 #include <vector>
+#include <queue>
 #include <utility>
+
 #include <QtDebug>
+#include <QtWidgets>
 #include <QPainter>
 #include <QCursor>
 #include <QMouseEvent>
 #include <QPixmap>
-#include <random>
+
 
 Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     this->difficulty = difficulty;
@@ -55,12 +58,11 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
     for(int y = 0; y < fieldHeight; y++) {
         for(int x = 0; x < fieldWidth; x++) {
-            fieldArray[y][x] = UNOPENED;
+            visibleFieldArray[y][x] = UNOPENED;
         }
     }
-
-
 }
+
 
 void Field::paintEvent(QPaintEvent *) {
     QPainter painter(this);
@@ -78,7 +80,7 @@ void Field::paintEvent(QPaintEvent *) {
     }
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
-            switch(fieldArray[y][x]) {
+            switch(visibleFieldArray[y][x]) {
                 case OPENED:
                     dp(y,x,number_images[unsigned(hiddenFieldArray[y][x])]);
                 break;
@@ -104,8 +106,6 @@ void Field::paintEvent(QPaintEvent *) {
             }
         }
     }
-
-
 }
 
 void Field::mousePressEvent(QMouseEvent *e){
@@ -121,8 +121,8 @@ void Field::mousePressEvent(QMouseEvent *e){
                 game_status = ONGOING;
             }
 
-            if(fieldArray[MEblockY][MEblockX] == UNOPENED) {
-                fieldArray[MEblockY][MEblockX] = OPENED;
+            if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+                visibleFieldArray[MEblockY][MEblockX] = OPENED;
             }
 
             if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
@@ -134,11 +134,11 @@ void Field::mousePressEvent(QMouseEvent *e){
     } else if (e->button() == Qt::RightButton){
         if (withinField(e->x(), e->y())) {
 
-            if(fieldArray[MEblockY][MEblockX] == FLAG) {
-                fieldArray[MEblockY][MEblockX] = UNOPENED;
+            if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
+                visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
             }
-            else if (fieldArray[MEblockY][MEblockX] == UNOPENED) {
-                fieldArray[MEblockY][MEblockX] = FLAG;
+            else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+                visibleFieldArray[MEblockY][MEblockX] = FLAG;
             }
 
         }
@@ -148,6 +148,7 @@ void Field::mousePressEvent(QMouseEvent *e){
     this->update();
 }
 
+
 void Field::openFieldSection(int x, int y) { //wave agl
     ///TODO
 }
@@ -156,6 +157,7 @@ void Field::openFieldSection(int x, int y) { //wave agl
 bool Field::withinField(int x, int y) {
     return(x >= 0 && x <= fieldPixelSize && x >= 0 && y <= fieldPixelSize);
 }
+
 
 void Field::generateHiddenField(int x_click, int y_click) {
     srand (unsigned(time(nullptr)));
