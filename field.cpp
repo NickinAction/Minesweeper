@@ -68,7 +68,7 @@ void Field::paintEvent(QPaintEvent *) {
     auto dp = [&](int y, int x, QPixmap& pm) {
       painter.drawPixmap(blockWidth*x+1, blockHeight*y+1, blockWidth-1, blockHeight-1, pm);
     };
-
+    /*
     if (game_status == NOT_STARTED) { // field hasn't been generated yet
         for (int i = 0; i < fieldHeight; i++) {
             for (int j = 0; j < fieldWidth; j++) {
@@ -77,6 +77,7 @@ void Field::paintEvent(QPaintEvent *) {
         }
         return;
     }
+    */
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
             switch(visibleFieldArray[y][x]) {
