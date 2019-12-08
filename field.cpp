@@ -30,21 +30,25 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
     switch (difficulty) {
         case 'e':
+            //this->resize(500, 500);
             fieldWidth = 10;
             fieldHeight = 10;
             mineCount = 12;
+            flagCount = 12;
         break;
 
         case 'm':
             fieldWidth = 25;
             fieldHeight = 25;
             mineCount = 94;
+            flagCount = 94;
         break;
 
         case 'h':
-            fieldWidth = 30;
+            fieldWidth = 38;
             fieldHeight = 38;
             mineCount = 216;
+            flagCount = 216;
         break;
 
         default:
@@ -146,9 +150,11 @@ void Field::mousePressEvent(QMouseEvent *e){
     else if (e->button() == Qt::RightButton){
         if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
             visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
+            flagCount++;
         }
         else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
             visibleFieldArray[MEblockY][MEblockX] = FLAG;
+            flagCount--;
         }
     }
 

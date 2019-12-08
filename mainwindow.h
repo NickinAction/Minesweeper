@@ -21,6 +21,9 @@ public:
 public slots:
     void setDifficulty(char diff);
 
+private slots:
+    void on_smileButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     Field *field = new Field();

@@ -26,6 +26,7 @@ private:
     int fieldWidth;
     int fieldHeight;
     int mineCount;
+    int flagCount;
     bool drawflag = false;
     char visibleFieldArray[38][38]; // maximum size that we may need.
     short int hiddenFieldArray[38][38];
