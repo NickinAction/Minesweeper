@@ -34,7 +34,8 @@ private:
         UNOPENED = 'u',
         FLAG = 'f',
         OPENED = 'o',
-        OPENED_MINE = 'm'
+        OPENED_MINE = 'm',
+        DETONATED_MINE = 'd'
     };
 
     char game_status = 'n';

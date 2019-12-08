@@ -28,7 +28,6 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
         number_images.push_back(QPixmap(QString::fromStdString(number_images_address)));
     }
 
-    // This code just asksfor switch/case instead.
     switch (difficulty) {
         case 'e':
             fieldWidth = 10;
@@ -81,6 +80,14 @@ void Field::paintEvent(QPaintEvent *) {
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
             switch(visibleFieldArray[y][x]) {
+                case DETONATED_MINE:
+                    painter.fillRect(blockWidth*x+1, blockHeight*y+1, blockWidth-1, blockHeight, Qt::red);
+                    dp(y,x,mine);
+                break;
+                case OPENED_MINE:
+                    dp(y,x, number_images[0]);
+                    dp(y,x,mine);
+                break;
                 case OPENED:
                     dp(y,x,number_images[unsigned(hiddenFieldArray[y][x])]);
                 break;
@@ -92,7 +99,7 @@ void Field::paintEvent(QPaintEvent *) {
                 }
         }
     }
-
+    // code used for testing ( draws the whole field )
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
             if(hiddenFieldArray[y][x] == MINE) {
@@ -123,12 +130,13 @@ void Field::mousePressEvent(QMouseEvent *e){
             game_status = ONGOING;
             openFieldSection(MEblockX, MEblockY);
         }
-        if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-            visibleFieldArray[MEblockY][MEblockX] = OPENED;
-        }
-        else if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
-            visibleFieldArray[MEblockY][MEblockX] = OPENED_MINE;
+        if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
+            visibleFieldArray[MEblockY][MEblockX] = DETONATED_MINE;
             loseGame();
+
+        }
+        else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+            visibleFieldArray[MEblockY][MEblockX] = OPENED;
         }
         else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
             openFieldSection(MEblockY, MEblockX);
@@ -202,6 +210,19 @@ short Field::adjacentFlagCount(int cellX, int cellY) {
 
 void Field::loseGame() {
     game_status = LOST;
+
+    // open the field
+    for(int y = 0; y < fieldHeight; y++) {
+        for(int x = 0; x < fieldWidth; x++) {
+            if (visibleFieldArray[y][x] == DETONATED_MINE) {
+                continue;
+            }
+            else if(hiddenFieldArray[y][x] == MINE) {
+                visibleFieldArray[y][x] = OPENED_MINE;
+            }
+            else visibleFieldArray[y][x] = OPENED;
+        }
+    }
 }
 
 void Field::openFieldSection(int start_x, int start_y, bool middleClick) { //wave agl
@@ -234,6 +255,7 @@ void Field::openFieldSection(int start_x, int start_y, bool middleClick) { //wav
             continue;
         }
         else if (hiddenFieldArray[y][x] == MINE && middleClick) {
+            visibleFieldArray[y][x] = DETONATED_MINE;
             loseGame();
             return;
         }
