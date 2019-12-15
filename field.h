@@ -7,10 +7,15 @@
 #include <QWidget>
 
 class Field : public QWidget {
+    Q_OBJECT
 
 public:
 
     explicit Field(QWidget *parent = nullptr, char difficulty = 'e');
+
+
+signals:
+    void sendFlagCount(int flagCount);
 
 private:
 

@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     dialog = new StartGameDialog(this);
     connect(dialog, SIGNAL(setDifficulty(char)), this, SLOT(setDifficulty(char)));
+
     //connect(this->ui->smileButton, SIGNAL(clicked()), this->dialog, SLOT(show()));
 }
 
@@ -25,10 +26,15 @@ void MainWindow::setDifficulty(char diff) {
         field->close();
     }
     field = new Field(this, diff);
+    connect(field, SIGNAL(sendFlagCount(int)), this, SLOT(setFlagCount(int)));
     ui->verticalLayout->addWidget(field);
 }
 
 void MainWindow::on_smileButton_clicked(){
     this->dialog->show();
-    this->ui->smileButton->setText("Reset");
+    //this->ui->smileButton->setText("Reset");
+}
+
+void MainWindow::setFlagCount(int flagCount) {
+    this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
 }

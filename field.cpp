@@ -151,10 +151,12 @@ void Field::mousePressEvent(QMouseEvent *e){
         if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
             visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
             flagCount++;
+            emit sendFlagCount(flagCount);
         }
         else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
             visibleFieldArray[MEblockY][MEblockX] = FLAG;
             flagCount--;
+            emit sendFlagCount(flagCount);
         }
     }
 

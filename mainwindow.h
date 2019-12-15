@@ -23,6 +23,7 @@ public slots:
 
 private slots:
     void on_smileButton_clicked();
+    void setFlagCount(int flagCount);
 
 private:
     Ui::MainWindow *ui;
