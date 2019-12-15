@@ -4,7 +4,7 @@ Minesweeper replication project. Made on Qt.
 
 - Cheat codes for game 
 - Game winning
-- Flag counting
+- Flag counting graphics
 - Timer
 - Smile on Reset/Start Button
 - Resize field depending on difficulty
