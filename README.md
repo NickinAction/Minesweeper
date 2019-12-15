@@ -8,4 +8,6 @@ Minesweeper replication project. Made on Qt.
 - Timer
 - Smile on Reset/Start Button
 - Resize field depending on difficulty
+- Main Menu
+
 
