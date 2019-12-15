@@ -23,6 +23,7 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
     number_images.push_back(QPixmap(":/images/Minesweeper_pressed-square.svg.png"));
 
+
     for (int i = 1; i <= 8; i++) {
         std::string number_images_address = ":/images/number" + std::string(1, char('0' + i)) + ".png";
         number_images.push_back(QPixmap(QString::fromStdString(number_images_address)));

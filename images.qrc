@@ -12,5 +12,7 @@
         <file>number6.png</file>
         <file>number7.png</file>
         <file>number8.png</file>
+        <file>smile.png</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>
