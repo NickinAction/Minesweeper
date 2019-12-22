@@ -4,7 +4,7 @@
 #include <QKeyEvent>
 #include <QtDebug>
 #include <QPainter>
-
+#include "numberdisplay.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QIcon ButtonIcon(smile);
     this->ui->smileButton->setIcon(ButtonIcon);
     this->ui->smileButton->setIconSize(this->ui->smileButton->size());
+
+
+    flagDisplay = new NumberDisplay(this);
+    timerDisplay = new NumberDisplay(this);
+
+    ui->numberDisplayLayout->addWidget(flagDisplay);
+    //ui->numberDisplayLayout->addWidget(timerDisplay);
 }
 
 MainWindow::~MainWindow()
@@ -42,5 +49,6 @@ void MainWindow::on_smileButton_clicked(){
 }
 
 void MainWindow::setFlagCount(int flagCount) {
+    //this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
     this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
 }

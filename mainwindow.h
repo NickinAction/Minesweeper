@@ -5,6 +5,7 @@
 #include <QPainter>
 #include "field.h"
 #include "startgamedialog.h"
+#include "numberdisplay.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,7 +28,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Field *field = new Field();
+    Field *field = nullptr;
+    NumberDisplay* timerDisplay;
+    NumberDisplay* flagDisplay;
     StartGameDialog* dialog;
 };
 

@@ -28,11 +28,13 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     field.cpp \
-    startgamedialog.cpp
+    startgamedialog.cpp \
+    numberdisplay.cpp
 HEADERS += \
         mainwindow.h \
     field.h \
-    startgamedialog.h
+    startgamedialog.h \
+    numberdisplay.h
 
 FORMS += \
         mainwindow.ui \
