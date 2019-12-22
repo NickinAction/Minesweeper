@@ -13,6 +13,17 @@
         <file>number7.png</file>
         <file>number8.png</file>
         <file>smile.png</file>
+        <file>timer1.png</file>
+        <file>timer7.png</file>
+        <file>timer_minus.png</file>
+        <file>timer4.png</file>
+        <file>timer9.png</file>
+        <file>timer6.png</file>
+        <file>timer3.png</file>
+        <file>timer2.png</file>
+        <file>timer0.png</file>
+        <file>timer5.png</file>
+        <file>timer8.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
