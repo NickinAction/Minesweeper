@@ -12,7 +12,7 @@ public:
 signals:
 
 public slots:
-    void setFlagNum(int number);
+    void setNum(int number);
 
 private:
     void paintEvent(QPaintEvent *Event) override;

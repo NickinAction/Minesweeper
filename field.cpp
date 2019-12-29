@@ -133,6 +133,7 @@ void Field::mousePressEvent(QMouseEvent *e){
         if(game_status == NOT_STARTED) {
             generateHiddenField(MEblockY, MEblockX);
             game_status = ONGOING;
+            emit startGameTimer();
             openFieldSection(MEblockX, MEblockY);
         }
         if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {

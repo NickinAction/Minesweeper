@@ -139,9 +139,9 @@
     <property name="geometry">
      <rect>
       <x>970</x>
-      <y>180</y>
+      <y>40</y>
       <width>211</width>
-      <height>151</height>
+      <height>291</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="numberDisplayLayout"/>

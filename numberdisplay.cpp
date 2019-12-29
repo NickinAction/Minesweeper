@@ -42,7 +42,7 @@ void NumberDisplay::paintEvent(QPaintEvent *) {
 }
 
 
-void NumberDisplay::setFlagNum(int number) {
+void NumberDisplay::setNum(int number) {
     this->number = number;
     update();
 }

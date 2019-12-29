@@ -16,6 +16,7 @@ public:
 
 signals:
     void sendFlagCount(int flagCount);
+    void startGameTimer(bool fromField = true);
 
 private:
 

@@ -26,8 +26,11 @@ private slots:
     void on_smileButton_clicked();
     void setFlagCount(int flagCount);
 
+    void timerTick(bool fromField = false);
+
 signals:
     void updateFlagCount(int number);
+    void updateTimer(int number);
 
 private:
     Ui::MainWindow *ui;
@@ -35,6 +38,12 @@ private:
     NumberDisplay* timerDisplay;
     NumberDisplay* flagDisplay;
     StartGameDialog* dialog;
+
+    int timerCount = 0;
+
+    QTimer* timer = nullptr;
+
+    bool tickTimer = false;
 };
 
 #endif // MAINWINDOW_H
