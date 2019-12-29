@@ -12,7 +12,7 @@ class Field : public QWidget {
 public:
 
     explicit Field(QWidget *parent = nullptr, char difficulty = 'e');
-
+    int getFlagCount();
 
 signals:
     void sendFlagCount(int flagCount);

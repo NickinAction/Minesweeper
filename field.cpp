@@ -388,3 +388,7 @@ void Field::generateHiddenField(int x_click, int y_click) {
 
     }
 }
+
+int Field::getFlagCount() {
+    return flagCount;
+}

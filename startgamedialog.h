@@ -23,6 +23,7 @@ public slots:
     void mediumButton();
     void hardButton();
 
+
 private:
     Ui::StartGameDialog *ui;
 };

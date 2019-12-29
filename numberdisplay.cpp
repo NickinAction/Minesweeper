@@ -3,16 +3,13 @@
 
 NumberDisplay::NumberDisplay(QWidget *parent) : QWidget(parent)
 {
-
-
-
     for (int i = 0; i <= 9; i++) {
         std::string number_images_address = ":/images/timer" + std::string(1, char('0' + i)) + ".png";
         counter_images.push_back(QPixmap(QString::fromStdString(number_images_address)));
     }
 
-
     minus_sign = QPixmap(":/images/timer_minus");
+
 }
 
 void NumberDisplay::paintEvent(QPaintEvent *) {
@@ -29,16 +26,23 @@ void NumberDisplay::paintEvent(QPaintEvent *) {
     int tens;
     int hundreds;
 
+    ones = abs(number)%10;
+    tens = (abs(number)/10)%10;
+    hundreds =(abs(number)/100)%10;
+
+    dp(2, counter_images[unsigned(ones)]);
+    dp(1, counter_images[unsigned(tens)]);
 
     if(number >= 0) {
-       ones = number%10;
-       tens = (number/10)%10;
-       hundreds =(number/100)%10;
-
-       dp(2, counter_images[unsigned(ones)]);
-       dp(1, counter_images[unsigned(tens)]);
-       dp(0, counter_images[unsigned(hundreds)]);
+        dp(0, counter_images[unsigned(hundreds)]);
     }
+    else {
+        dp(0, minus_sign);
+    }
+}
 
 
+void NumberDisplay::setFlagNum(int number) {
+    this->number = number;
+    update();
 }

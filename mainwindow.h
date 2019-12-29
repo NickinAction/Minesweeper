@@ -26,6 +26,9 @@ private slots:
     void on_smileButton_clicked();
     void setFlagCount(int flagCount);
 
+signals:
+    void updateFlagCount(int number);
+
 private:
     Ui::MainWindow *ui;
     Field *field = nullptr;

@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dialog = new StartGameDialog(this);
     connect(dialog, SIGNAL(setDifficulty(char)), this, SLOT(setDifficulty(char)));
 
+
     //connect(this->ui->smileButton, SIGNAL(clicked()), this->dialog, SLOT(show()));
     QPixmap smile = QPixmap(":/images/smile.png");
     QIcon ButtonIcon(smile);
@@ -24,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     flagDisplay = new NumberDisplay(this);
     timerDisplay = new NumberDisplay(this);
+
+    //connect(obj1, SIGNAL(someSignal(arg types)), obj2, SLOT(someSlot(arg types)));
+    connect(this, SIGNAL(updateFlagCount(int)), flagDisplay, SLOT(setFlagNum(int)));
 
     ui->numberDisplayLayout->addWidget(flagDisplay);
     //ui->numberDisplayLayout->addWidget(timerDisplay);
@@ -41,6 +45,7 @@ void MainWindow::setDifficulty(char diff) {
     field = new Field(this, diff);
     connect(field, SIGNAL(sendFlagCount(int)), this, SLOT(setFlagCount(int)));
     ui->verticalLayout->addWidget(field);
+    setFlagCount(field->getFlagCount());
 }
 
 void MainWindow::on_smileButton_clicked(){
@@ -51,4 +56,5 @@ void MainWindow::on_smileButton_clicked(){
 void MainWindow::setFlagCount(int flagCount) {
     //this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
     this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
+    emit updateFlagCount(flagCount);
 }

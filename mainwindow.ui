@@ -139,7 +139,7 @@
     <property name="geometry">
      <rect>
       <x>970</x>
-      <y>10</y>
+      <y>180</y>
       <width>211</width>
       <height>151</height>
      </rect>
@@ -152,7 +152,7 @@
     <enum>RightToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
