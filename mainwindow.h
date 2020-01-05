@@ -27,6 +27,7 @@ private slots:
     void setFlagCount(int flagCount);
 
     void timerTick(bool fromField = false);
+    void gameOver(char gameStatus);
 
 signals:
     void updateFlagCount(int number);

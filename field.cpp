@@ -121,6 +121,9 @@ void Field::paintEvent(QPaintEvent *) {
 
 void Field::mousePressEvent(QMouseEvent *e){
 
+
+    if(game_status == WON || game_status == LOST) return;
+
     int MEblockX = e->x()/blockWidth; //mouse event block
     int MEblockY = e->y()/blockHeight;
 
@@ -139,6 +142,7 @@ void Field::mousePressEvent(QMouseEvent *e){
         if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
             visibleFieldArray[MEblockY][MEblockX] = DETONATED_MINE;
             loseGame();
+            emit updateGameStatus(LOST);
 
         }
         else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
@@ -309,6 +313,26 @@ void Field::openFieldSection(int start_x, int start_y, bool middleClick) { //wav
 
         visibleFieldArray[y][x] = OPENED;
     }
+
+   if (checkWin()) winGame();
+
+}
+
+bool Field::checkWin() {
+    for (int x = 0; x < fieldWidth; x++) {
+        for (int y = 0; y < fieldHeight; y++) {
+            if (visibleFieldArray[x][y] != OPENED && hiddenFieldArray[x][y] != MINE) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void Field::winGame() {
+    game_status = WON;
+
+    emit updateGameStatus(WON);
 
 }
 

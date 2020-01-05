@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     flagDisplay = new NumberDisplay(this);
     timerDisplay = new NumberDisplay(this);
 
+
     //connect(obj1, SIGNAL(someSignal(arg types)), obj2, SLOT(someSlot(arg types)));
     connect(this, SIGNAL(updateFlagCount(int)), flagDisplay, SLOT(setNum(int)));
     connect(this, SIGNAL(updateTimer(int)), timerDisplay, SLOT(setNum(int)));
@@ -57,6 +58,8 @@ void MainWindow::setDifficulty(char diff) {
     field = new Field(this, diff);
     connect(field, SIGNAL(sendFlagCount(int)), this, SLOT(setFlagCount(int)));
     connect(field, SIGNAL(startGameTimer(bool)), this, SLOT(timerTick(bool)));
+
+    connect(field, SIGNAL(updateGameStatus(char)), this, SLOT(gameOver(char)));
     ui->verticalLayout->addWidget(field);
     setFlagCount(field->getFlagCount());
 }
@@ -72,6 +75,19 @@ void MainWindow::timerTick(bool fromField) {
 void MainWindow::on_smileButton_clicked(){
     this->dialog->show();
     //this->ui->smileButton->setText("Reset");
+}
+
+void MainWindow::gameOver(char gameStatus) {
+    if(gameStatus == 'w') {
+        //set smile to cool glasses version
+
+    }
+    else if(gameStatus == 'l') {
+        //set smile to dead version
+
+    }
+
+    timer->stop();
 }
 
 void MainWindow::setFlagCount(int flagCount) {

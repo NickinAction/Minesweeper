@@ -17,6 +17,7 @@ public:
 signals:
     void sendFlagCount(int flagCount);
     void startGameTimer(bool fromField = true);
+    void updateGameStatus(char newStatus);
 
 private:
 
@@ -41,8 +42,8 @@ private:
         UNOPENED = 'u',
         FLAG = 'f',
         OPENED = 'o',
-        OPENED_MINE = 'm',
-        DETONATED_MINE = 'd'
+        OPENED_MINE = 'm', // only in use when the game is lost
+        DETONATED_MINE = 'd' // only in use when the game is lost
     };
 
     char game_status = 'n';
@@ -67,6 +68,8 @@ private:
     short adjacentFlagCount(int cellX, int cellY);
 
     void loseGame();
+    bool checkWin();
+    void winGame();
 
 };
 
