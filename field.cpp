@@ -146,10 +146,7 @@ void Field::mousePressEvent(QMouseEvent *e){
 
         }
         else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-            visibleFieldArray[MEblockY][MEblockX] = OPENED;
-        }
-        else if(visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-            openFieldSection(MEblockY, MEblockX);
+            openFieldSection(MEblockX, MEblockY);
         }
     }
 
