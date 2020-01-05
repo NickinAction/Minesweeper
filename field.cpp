@@ -135,9 +135,11 @@ void Field::mousePressEvent(QMouseEvent *e){
     if (e->button() == Qt::LeftButton) {
         if(game_status == NOT_STARTED) {
             generateHiddenField(MEblockY, MEblockX);
-            game_status = ONGOING;
-            emit startGameTimer();
-            openFieldSection(MEblockX, MEblockY);
+            if (visibleFieldArray[MEblockY][MEblockX] != FLAG) {
+                game_status = ONGOING;
+                emit startGameTimer();
+                openFieldSection(MEblockX, MEblockY);
+            }
         }
         if (hiddenFieldArray[MEblockY][MEblockX] == MINE) {
             visibleFieldArray[MEblockY][MEblockX] = DETONATED_MINE;
