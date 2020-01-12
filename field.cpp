@@ -32,58 +32,64 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     switch (difficulty) {
         case 'e':
             //this->resize(500, 500);
-            fieldWidth = 10;
-            fieldHeight = 10;
-            mineCount = 12;
-            flagCount = 12;
+            fieldHeightInCells = 9;
+            fieldWidthInCells = 9;
+            mineCount = 10;
         break;
 
         case 'm':
-            fieldWidth = 25;
-            fieldHeight = 20;
-            mineCount = 94;
-            flagCount = 94;
+            fieldHeightInCells = 16;
+            fieldWidthInCells = 16;
+            mineCount = 40;
         break;
 
         case 'h':
-            fieldWidth = 38;
-            fieldHeight = 30;
-            mineCount = 216;
-            flagCount = 216;
+            fieldHeightInCells = 16;
+            fieldWidthInCells = 30;
+            mineCount = 99;
         break;
 
         default:
             throw std::invalid_argument("No such difficulty mode");
     }
 
-    fieldPixelHeight = fieldPixelWidth * fieldHeight/ fieldWidth;
+    flagCount = mineCount;
+
+    if (fieldHeightInCells > fieldWidthInCells) {
+        fieldPixelWidth = fieldPixelHeight * fieldWidthInCells/ fieldHeightInCells;
+    }
+    else if (fieldWidthInCells > fieldHeightInCells) {
+        fieldPixelHeight = fieldPixelWidth * fieldHeightInCells/ fieldWidthInCells;
+    }
+
     // there shouldn't be overflow with current numbers.
     // Still, be careful with this line.
 
-    blockWidth = fieldPixelWidth/fieldWidth;
-    blockHeight = fieldPixelHeight/fieldHeight;
+    blockPixelWidth = fieldPixelWidth/fieldWidthInCells;
+    blockPixelHeight = fieldPixelHeight/fieldHeightInCells;
 
-    for(int y = 0; y < fieldHeight; y++) {
-        for(int x = 0; x < fieldWidth; x++) {
+    emit resizeInLayout(fieldPixelWidth, fieldPixelHeight);
+
+    for(int y = 0; y < fieldHeightInCells; y++) {
+        for(int x = 0; x < fieldWidthInCells; x++) {
             visibleFieldArray[y][x] = UNOPENED;
         }
     }
 
-    emit resizeInLayout(fieldPixelWidth, fieldPixelHeight);
 }
 
 
 void Field::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     auto dp = [&](int y, int x, QPixmap& pm) {
-      painter.drawPixmap(blockWidth*x+1, blockHeight*y+1, blockWidth-1, blockHeight-1, pm);
+      painter.drawPixmap(blockPixelWidth*x+1, blockPixelHeight*y+1, blockPixelWidth-1, blockPixelHeight-1, pm);
     };
 
-    for (int y = 0; y < fieldHeight; y++) {
-        for (int x = 0; x < fieldWidth; x++) {
+    for (int y = 0; y < fieldHeightInCells; y++) {
+        for (int x = 0; x < fieldWidthInCells; x++) {
             switch(visibleFieldArray[y][x]) {
                 case DETONATED_MINE:
-                    painter.fillRect(blockWidth*x+1, blockHeight*y+1, blockWidth-1, blockHeight, Qt::red);
+                    painter.fillRect(blockPixelWidth*x+1, blockPixelHeight*y+1, blockPixelWidth-1, blockPixelHeight, Qt::red);
                     dp(y,x,mine);
                 break;
                 case OPENED_MINE:
@@ -121,8 +127,8 @@ void Field::mousePressEvent(QMouseEvent *e){
 
     if(game_status == WON || game_status == LOST) return;
 
-    int MEblockX = e->x()/blockWidth; //mouse event block
-    int MEblockY = e->y()/blockHeight;
+    int MEblockX = e->x()/blockPixelWidth; //mouse event block
+    int MEblockY = e->y()/blockPixelHeight;
 
 
     if (!withinField(e->x(), e->y())) {
@@ -174,7 +180,7 @@ void Field::mousePressEvent(QMouseEvent *e){
 
 short Field::adjacentFlagCount(int cellX, int cellY) {
     short flagCount = 0;
-    if (cellY != fieldHeight - 1) {
+    if (cellY != fieldHeightInCells - 1) {
         if (visibleFieldArray[cellY+1][cellX] == FLAG) { // DOWN
             flagCount++;
         }
@@ -184,7 +190,7 @@ short Field::adjacentFlagCount(int cellX, int cellY) {
             flagCount++;
         }
     }
-    if (cellX != fieldWidth - 1) {
+    if (cellX != fieldWidthInCells - 1) {
         if (visibleFieldArray[cellY][cellX+1] == FLAG) { // RIGHT
             flagCount++;
         }
@@ -194,12 +200,12 @@ short Field::adjacentFlagCount(int cellX, int cellY) {
             flagCount++;
         }
     }
-    if (cellX != fieldWidth - 1 && cellY != 0) {
+    if (cellX != fieldWidthInCells - 1 && cellY != 0) {
         if (visibleFieldArray[cellY-1][cellX+1] == FLAG) { // UP-RIGHT--
             flagCount++;
         }
     }
-    if (cellX != fieldWidth - 1 && cellY != fieldHeight - 1) {
+    if (cellX != fieldWidthInCells - 1 && cellY != fieldHeightInCells - 1) {
         if (visibleFieldArray[cellY+1][cellX+1] == FLAG) { // DOWN-RIGHT
             flagCount++;
         }
@@ -209,7 +215,7 @@ short Field::adjacentFlagCount(int cellX, int cellY) {
             flagCount++;
         }
     }
-    if (cellX != 0 && cellY != fieldHeight - 1) {
+    if (cellX != 0 && cellY != fieldHeightInCells - 1) {
         if (visibleFieldArray[cellY+1][cellX-1] == FLAG) { // DOWN-LEFT--
             flagCount++;
         }
@@ -222,8 +228,8 @@ void Field::loseGame() {
     game_status = LOST;
 
     // open the field
-    for(int y = 0; y < fieldHeight; y++) {
-        for(int x = 0; x < fieldWidth; x++) {
+    for(int y = 0; y < fieldHeightInCells; y++) {
+        for(int x = 0; x < fieldWidthInCells; x++) {
             if (visibleFieldArray[y][x] == DETONATED_MINE) {
                 continue;
             }
@@ -282,28 +288,28 @@ void Field::openFieldSection(int start_x, int start_y, bool middleClick) { //wav
             }
         }
 
-        if (y != fieldHeight - 1) { // DOWN
+        if (y != fieldHeightInCells - 1) { // DOWN
             cells.push(Point(x, y + 1));
         }
         if (y != 0) { // UP
             cells.push(Point(x, y - 1));
         }
-        if (x != fieldWidth - 1) { // RIGHT
+        if (x != fieldWidthInCells - 1) { // RIGHT
             cells.push(Point(x + 1, y));
         }
         if (x != 0) { // LEFT
             cells.push(Point(x - 1, y));
         }
-        if (x != fieldWidth - 1 && y != 0) { // UP-RIGHT
+        if (x != fieldWidthInCells - 1 && y != 0) { // UP-RIGHT
             cells.push(Point(x + 1, y - 1));
         }
-        if (x != fieldWidth - 1 && y != fieldHeight - 1) { // DOWN-RIGHT
+        if (x != fieldWidthInCells - 1 && y != fieldHeightInCells - 1) { // DOWN-RIGHT
             cells.push(Point(x + 1, y + 1));
         }
         if (x != 0 && y != 0) {// UP-LEFT
             cells.push(Point(x - 1, y - 1));
         }
-        if (x != 0 && y != fieldHeight - 1) { // DOWN-LEFT
+        if (x != 0 && y != fieldHeightInCells - 1) { // DOWN-LEFT
             cells.push(Point(x - 1, y + 1));
         }
 
@@ -315,8 +321,8 @@ void Field::openFieldSection(int start_x, int start_y, bool middleClick) { //wav
 }
 
 bool Field::checkWin() {
-    for (int x = 0; x < fieldWidth; x++) {
-        for (int y = 0; y < fieldHeight; y++) {
+    for (int x = 0; x < fieldWidthInCells; x++) {
+        for (int y = 0; y < fieldHeightInCells; y++) {
             if (visibleFieldArray[x][y] != OPENED && hiddenFieldArray[x][y] != MINE) {
                 return false;
             }
@@ -339,8 +345,8 @@ bool Field::withinField(int x, int y) {
 void Field::generateHiddenField(int x_click, int y_click) {
     srand (unsigned(time(nullptr)));
 
-    for (int y = 0; y < fieldHeight; y ++) {
-        for (int x = 0; x < fieldWidth; x++) {
+    for (int y = 0; y < fieldHeightInCells; y ++) {
+        for (int x = 0; x < fieldWidthInCells; x++) {
             hiddenFieldArray[y][x] = 0;
         }
     }
@@ -348,8 +354,8 @@ void Field::generateHiddenField(int x_click, int y_click) {
         int rand_y, rand_x;
 
         do {
-            rand_y = rand() % fieldHeight;
-            rand_x = rand() % fieldWidth;
+            rand_y = rand() % fieldHeightInCells;
+            rand_x = rand() % fieldWidthInCells;
         }while(hiddenFieldArray[rand_y][rand_x] == MINE || (abs(x_click - rand_y) < 2 && abs(rand_x - y_click) < 2));
 
         hiddenFieldArray[rand_y][rand_x] = MINE;
@@ -357,13 +363,13 @@ void Field::generateHiddenField(int x_click, int y_click) {
     }
 
     short int numberOfMines;
-    for (int y = 0; y < fieldHeight; y++) {
-        for(int x = 0; x < fieldWidth; x++) {
+    for (int y = 0; y < fieldHeightInCells; y++) {
+        for(int x = 0; x < fieldWidthInCells; x++) {
             numberOfMines = 0;
             if (hiddenFieldArray[y][x] == MINE) {
                 continue;
             }
-            if (y != fieldHeight - 1) {
+            if (y != fieldHeightInCells - 1) {
                 if (hiddenFieldArray[y+1][x] == MINE) { // DOWN
                     numberOfMines++;
                 }
@@ -373,7 +379,7 @@ void Field::generateHiddenField(int x_click, int y_click) {
                     numberOfMines++;
                 }
             }
-            if (x != fieldWidth - 1) {
+            if (x != fieldWidthInCells - 1) {
                 if (hiddenFieldArray[y][x+1] == MINE) { // RIGHT
                     numberOfMines++;
                 }
@@ -383,12 +389,12 @@ void Field::generateHiddenField(int x_click, int y_click) {
                     numberOfMines++;
                 }
             }
-            if (x != fieldWidth - 1 && y != 0) {
+            if (x != fieldWidthInCells - 1 && y != 0) {
                 if (hiddenFieldArray[y-1][x+1] == MINE) { // UP-RIGHT--
                     numberOfMines++;
                 }
             }
-            if (x != fieldWidth - 1 && y != fieldHeight - 1) {
+            if (x != fieldWidthInCells - 1 && y != fieldHeightInCells - 1) {
                 if (hiddenFieldArray[y+1][x+1] == MINE) { // DOWN-RIGHT
                     numberOfMines++;
                 }
@@ -398,7 +404,7 @@ void Field::generateHiddenField(int x_click, int y_click) {
                     numberOfMines++;
                 }
             }
-            if (x != 0 && y != fieldHeight - 1) {
+            if (x != 0 && y != fieldHeightInCells - 1) {
                 if (hiddenFieldArray[y+1][x-1] == MINE) { // DOWN-LEFT--
                     numberOfMines++;
                 }

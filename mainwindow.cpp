@@ -52,7 +52,7 @@ void MainWindow::setDifficulty(char diff) {
     field = new Field(this, diff);
     connect(field, SIGNAL(sendFlagCount(int)), this, SLOT(setFlagCount(int)));
     connect(field, SIGNAL(startGameTimer(bool)), this, SLOT(timerTick(bool)));
-
+    connect(field, SIGNAL(resizeInLayout(int,int)), this, SLOT(updateFieldHeight(int,int)));
     connect(field, SIGNAL(updateGameStatus(char)), this, SLOT(gameOver(char)));
     ui->fieldLayout->addWidget(field);
     setFlagCount(field->getFlagCount());

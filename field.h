@@ -25,14 +25,14 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *Event) override;
 
-    const int fieldPixelWidth = 950; // we never resize it currently.
+    int fieldPixelWidth = 950;
     int fieldPixelHeight = 950;
 
-    int blockWidth; // the size of one block on the field
-    int blockHeight;
+    int blockPixelWidth; // the size of one block on the field
+    int blockPixelHeight;
 
-    int fieldWidth;
-    int fieldHeight;
+    int fieldWidthInCells;
+    int fieldHeightInCells;
     int mineCount;
     int flagCount;
     bool drawflag = false;
