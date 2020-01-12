@@ -12,7 +12,6 @@
         <file>number6.png</file>
         <file>number7.png</file>
         <file>number8.png</file>
-        <file>smile.png</file>
         <file>timer1.png</file>
         <file>timer7.png</file>
         <file>timer_minus.png</file>
@@ -25,5 +24,10 @@
         <file>timer5.png</file>
         <file>timer8.png</file>
     </qresource>
-    <qresource prefix="/"/>
+    <qresource prefix="/smiles">
+        <file>smile.png</file>
+        <file>cool_smile.png</file>
+        <file>dead_smile.png</file>
+        <file>shocked_smile.png</file>
+    </qresource>
 </RCC>

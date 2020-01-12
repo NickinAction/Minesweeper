@@ -16,10 +16,13 @@ MainWindow::MainWindow(QWidget *parent) :
     dialog = new StartGameDialog(this);
     connect(dialog, SIGNAL(setDifficulty(char)), this, SLOT(setDifficulty(char)));
 
+    smile = setSmile("smile");
+    deadSmile = setSmile("dead_smile");
+    shockedSmile = setSmile("shocked_smile");
+    coolSmile = setSmile("cool_smile");
 
-    QPixmap smile = QPixmap(":/images/smile.png");
-    QIcon ButtonIcon(smile);
-    this->ui->smileButton->setIcon(ButtonIcon);
+
+    this->ui->smileButton->setIcon(this->smile);
     this->ui->smileButton->setIconSize(this->ui->smileButton->size());
 
 
@@ -34,6 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
+}
+
+QIcon MainWindow::setSmile(QString smileName) {
+    QPixmap smile = QPixmap(":/smiles/" + smileName + ".png");
+    return QIcon(smile);
 }
 
 MainWindow::~MainWindow()
@@ -75,22 +83,20 @@ void MainWindow::timerTick(bool fromField) {
 
 void MainWindow::on_smileButton_clicked(){
     this->dialog->show();
+    this->ui->smileButton->setIcon(this->smile);
 }
 
 void MainWindow::gameOver(char gameStatus) {
     if(gameStatus == 'w') {
-        //set smile to cool glasses version
-
+        this->ui->smileButton->setIcon(this->coolSmile);
     }
     else if(gameStatus == 'l') {
-        //set smile to dead version
-
+        this->ui->smileButton->setIcon(this->deadSmile);
     }
 
     timer->stop();
 }
 
 void MainWindow::setFlagCount(int flagCount) {
-    this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
     emit updateFlagCount(flagCount);
 }

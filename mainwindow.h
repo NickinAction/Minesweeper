@@ -41,11 +41,15 @@ private:
     NumberDisplay* flagDisplay;
     StartGameDialog* dialog;
 
+    QIcon smile, deadSmile, shockedSmile, coolSmile;
+
     int timerCount = 0;
 
     QTimer* timer = nullptr;
 
     bool tickTimer = false;
+
+    QIcon setSmile(QString smileName);
 };
 
 #endif // MAINWINDOW_H
