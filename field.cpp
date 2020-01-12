@@ -61,12 +61,15 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
     else if (fieldWidthInCells > fieldHeightInCells) {
         fieldPixelHeight = fieldPixelWidth * fieldHeightInCells/ fieldWidthInCells;
     }
-
     // there shouldn't be overflow with current numbers.
     // Still, be careful with this line.
 
     blockPixelWidth = fieldPixelWidth/fieldWidthInCells;
     blockPixelHeight = fieldPixelHeight/fieldHeightInCells;
+
+    // update fieldPixelWidth&Height to remove rounding error & maintain correct border-click processing
+    fieldPixelWidth = blockPixelWidth * fieldWidthInCells;
+    fieldPixelHeight = blockPixelHeight * fieldHeightInCells;
 
     emit resizeInLayout(fieldPixelWidth, fieldPixelHeight);
 
@@ -339,7 +342,7 @@ void Field::winGame() {
 }
 
 bool Field::withinField(int x, int y) {
-    return(x >= 0 && x <= fieldPixelWidth && x >= 0 && y <= fieldPixelHeight);
+    return(x >= 0 && x < fieldPixelWidth && y >= 0 && y < fieldPixelHeight);
 }
 
 void Field::generateHiddenField(int x_click, int y_click) {
