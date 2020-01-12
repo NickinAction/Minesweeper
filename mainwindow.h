@@ -21,6 +21,7 @@ public:
 
 public slots:
     void setDifficulty(char diff);
+    void updateFieldHeight(int width, int height);
 
 private slots:
     void on_smileButton_clicked();
