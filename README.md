@@ -4,9 +4,8 @@ Minesweeper replication project. Made on Qt.
 
 - Cheat codes for game 
 - Smile on Reset/Start Button (WIP)
-- Resize field depending on difficulty
 - Main Menu
-- Sort resources by folders
+- Sort resources by folders (WIP)
 - Custom mode
 
 
