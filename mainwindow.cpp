@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dialog, SIGNAL(setDifficulty(char)), this, SLOT(setDifficulty(char)));
 
 
-    //connect(this->ui->smileButton, SIGNAL(clicked()), this->dialog, SLOT(show()));
     QPixmap smile = QPixmap(":/images/smile.png");
     QIcon ButtonIcon(smile);
     this->ui->smileButton->setIcon(ButtonIcon);
@@ -27,8 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     flagDisplay = new NumberDisplay(this);
     timerDisplay = new NumberDisplay(this);
 
-
-    //connect(obj1, SIGNAL(someSignal(arg types)), obj2, SLOT(someSlot(arg types)));
     connect(this, SIGNAL(updateFlagCount(int)), flagDisplay, SLOT(setNum(int)));
     connect(this, SIGNAL(updateTimer(int)), timerDisplay, SLOT(setNum(int)));
 
@@ -37,9 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
-    //timer->start(1000);
-
-
 }
 
 MainWindow::~MainWindow()
@@ -60,8 +54,15 @@ void MainWindow::setDifficulty(char diff) {
     connect(field, SIGNAL(startGameTimer(bool)), this, SLOT(timerTick(bool)));
 
     connect(field, SIGNAL(updateGameStatus(char)), this, SLOT(gameOver(char)));
-    ui->verticalLayout->addWidget(field);
+    ui->fieldLayout->addWidget(field);
     setFlagCount(field->getFlagCount());
+}
+
+void MainWindow::updateFieldHeight(int width, int height) {
+    if (field) {
+        this->ui->fieldLayout->geometry().setX(width);
+        this->ui->fieldLayout->geometry().setY(height);
+    }
 }
 
 void MainWindow::timerTick(bool fromField) {
@@ -74,7 +75,6 @@ void MainWindow::timerTick(bool fromField) {
 
 void MainWindow::on_smileButton_clicked(){
     this->dialog->show();
-    //this->ui->smileButton->setText("Reset");
 }
 
 void MainWindow::gameOver(char gameStatus) {
@@ -91,7 +91,6 @@ void MainWindow::gameOver(char gameStatus) {
 }
 
 void MainWindow::setFlagCount(int flagCount) {
-    //this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
     this->ui->label->setText(QString::fromStdString(std::to_string(flagCount)));
     emit updateFlagCount(flagCount);
 }

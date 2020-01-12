@@ -18,14 +18,15 @@ signals:
     void sendFlagCount(int flagCount);
     void startGameTimer(bool fromField = true);
     void updateGameStatus(char newStatus);
+    void resizeInLayout(int newWidth, int newHeight);
 
 private:
 
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *Event) override;
 
-    const int fieldPixelSize = 950; //the pixel size of the entire field
-    // TODO: allow the whole field to be non-square, too.
+    const int fieldPixelWidth = 950; // we never resize it currently.
+    int fieldPixelHeight = 950;
 
     int blockWidth; // the size of one block on the field
     int blockHeight;

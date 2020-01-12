@@ -40,14 +40,14 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
 
         case 'm':
             fieldWidth = 25;
-            fieldHeight = 25;
+            fieldHeight = 20;
             mineCount = 94;
             flagCount = 94;
         break;
 
         case 'h':
             fieldWidth = 38;
-            fieldHeight = 38;
+            fieldHeight = 30;
             mineCount = 216;
             flagCount = 216;
         break;
@@ -56,14 +56,20 @@ Field::Field(QWidget *parent, char difficulty) : QWidget(parent){
             throw std::invalid_argument("No such difficulty mode");
     }
 
-    blockWidth = fieldPixelSize/fieldWidth;
-    blockHeight = fieldPixelSize/fieldHeight;
+    fieldPixelHeight = fieldPixelWidth * fieldHeight/ fieldWidth;
+    // there shouldn't be overflow with current numbers.
+    // Still, be careful with this line.
+
+    blockWidth = fieldPixelWidth/fieldWidth;
+    blockHeight = fieldPixelHeight/fieldHeight;
 
     for(int y = 0; y < fieldHeight; y++) {
         for(int x = 0; x < fieldWidth; x++) {
             visibleFieldArray[y][x] = UNOPENED;
         }
     }
+
+    emit resizeInLayout(fieldPixelWidth, fieldPixelHeight);
 }
 
 
@@ -72,16 +78,7 @@ void Field::paintEvent(QPaintEvent *) {
     auto dp = [&](int y, int x, QPixmap& pm) {
       painter.drawPixmap(blockWidth*x+1, blockHeight*y+1, blockWidth-1, blockHeight-1, pm);
     };
-    /*
-    if (game_status == NOT_STARTED) { // field hasn't been generated yet
-        for (int i = 0; i < fieldHeight; i++) {
-            for (int j = 0; j < fieldWidth; j++) {
-                dp(i,j,unopened_block);
-            }
-        }
-        return;
-    }
-    */
+
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
             switch(visibleFieldArray[y][x]) {
@@ -104,7 +101,7 @@ void Field::paintEvent(QPaintEvent *) {
                 }
         }
     }
-    // code used for testing ( draws the whole field )
+    /* code used for testing ( draws the whole field )
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
             if(hiddenFieldArray[y][x] == MINE) {
@@ -116,7 +113,7 @@ void Field::paintEvent(QPaintEvent *) {
                 //dp(i,j,number_images[unsigned(hiddenFieldArray[i][j])]);
             }
         }
-    }
+    }*/
 }
 
 void Field::mousePressEvent(QMouseEvent *e){
@@ -336,7 +333,7 @@ void Field::winGame() {
 }
 
 bool Field::withinField(int x, int y) {
-    return(x >= 0 && x <= fieldPixelSize && x >= 0 && y <= fieldPixelSize);
+    return(x >= 0 && x <= fieldPixelWidth && x >= 0 && y <= fieldPixelHeight);
 }
 
 void Field::generateHiddenField(int x_click, int y_click) {
