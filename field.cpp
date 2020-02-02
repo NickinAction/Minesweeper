@@ -158,18 +158,38 @@ void Field::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void Field::mousePressEvent(QMouseEvent *event) {
-    emit toggleSmile(true);
+void Field::mousePressEvent(QMouseEvent *e) {
+    if(e->button() == Qt::LeftButton || e->button() == Qt::MiddleButton) {
+        emit toggleSmile(true);
+    }
+
+    int MEblockX = e->x()/blockPixelWidth; //mouse event block
+    int MEblockY = e->y()/blockPixelHeight;
+
+
+    if (e->button() == Qt::RightButton){
+        if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
+            visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
+            flagCount++;
+            emit sendFlagCount(flagCount);
+        }
+        else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
+            visibleFieldArray[MEblockY][MEblockX] = FLAG;
+            flagCount--;
+            emit sendFlagCount(flagCount);
+        }
+    }
 
     setMouseTracking(true);
-
-    mouseMoveEvent(event);
+    mouseMoveEvent(e);
 }
 
 void Field::mouseReleaseEvent(QMouseEvent *e){
 
     highlightLeft = false;
     highlightMiddle = false;
+    highlightX = -1;
+    highlightY = -1;
     emit toggleSmile(false);
     setMouseTracking(false);
 
@@ -202,22 +222,9 @@ void Field::mouseReleaseEvent(QMouseEvent *e){
             openFieldSection(MEblockX, MEblockY);
         }
     }
-
-    else if (e->button() == Qt::RightButton){
-        if(visibleFieldArray[MEblockY][MEblockX] == FLAG) {
-            visibleFieldArray[MEblockY][MEblockX] = UNOPENED;
-            flagCount++;
-            emit sendFlagCount(flagCount);
-        }
-        else if (visibleFieldArray[MEblockY][MEblockX] == UNOPENED) {
-            visibleFieldArray[MEblockY][MEblockX] = FLAG;
-            flagCount--;
-            emit sendFlagCount(flagCount);
-        }
-    }
-
     else if (e->button() == Qt::MidButton) {
-        if(hiddenFieldArray[MEblockY][MEblockX] == adjacentFlagCount(MEblockX, MEblockY)) {
+        if(visibleFieldArray[MEblockY][MEblockX] == OPENED
+           && hiddenFieldArray[MEblockY][MEblockX] == adjacentFlagCount(MEblockX, MEblockY)) {
             openFieldSection(MEblockX, MEblockY, true);
         }
     }
