@@ -2,11 +2,16 @@ Minesweeper replication project. Made on Qt.
 
 # TODO:
 
+- **Shocked smile on Reset/Start Button**
+  - Differentiate between mousePress and mouseRelease
+  - Highlight the area to open
+  - Show the shocked smile
+  
+- **Custom mode**
+
 - Cheat codes for game 
-- Smile on Reset/Start Button (WIP)
 - Main Menu
 - Sort resources by folders (WIP)
-- Custom mode
 
 
 # KNOWN BUGS:
