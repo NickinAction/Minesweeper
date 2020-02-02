@@ -19,10 +19,12 @@ signals:
     void startGameTimer(bool fromField = true);
     void updateGameStatus(char newStatus);
     void resizeInLayout(int newWidth, int newHeight);
-
+    void toggleSmile(bool shocked);
 private:
 
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *Event) override;
 
     int fieldPixelWidth = 950;

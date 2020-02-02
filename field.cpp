@@ -125,8 +125,30 @@ void Field::paintEvent(QPaintEvent *) {
     }*/
 }
 
-void Field::mousePressEvent(QMouseEvent *e){
+void Field::mouseMoveEvent(QMouseEvent *event) {
+    int highlightX, highlightY;
 
+    highlightX = event->x()/blockPixelWidth;
+    highlightY = event->y()/blockPixelHeight;
+
+    if(event->buttons() & Qt::LeftButton) {
+
+    }
+}
+
+void Field::mousePressEvent(QMouseEvent *event) {
+    emit toggleSmile(true);
+
+    setMouseTracking(true);
+
+    mouseMoveEvent(event);
+}
+
+void Field::mouseReleaseEvent(QMouseEvent *e){
+
+    emit toggleSmile(false);
+
+    setMouseTracking(false);
 
     if(game_status == WON || game_status == LOST) return;
 

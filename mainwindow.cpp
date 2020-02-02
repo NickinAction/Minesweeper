@@ -62,6 +62,7 @@ void MainWindow::setDifficulty(char diff) {
     connect(field, SIGNAL(startGameTimer(bool)), this, SLOT(timerTick(bool)));
     connect(field, SIGNAL(resizeInLayout(int,int)), this, SLOT(updateFieldHeight(int,int)));
     connect(field, SIGNAL(updateGameStatus(char)), this, SLOT(gameOver(char)));
+    connect(field, SIGNAL(toggleSmile(bool)), this, SLOT(toggleSmile(bool)));
     ui->fieldLayout->addWidget(field);
     setFlagCount(field->getFlagCount());
 }
@@ -100,3 +101,15 @@ void MainWindow::gameOver(char gameStatus) {
 void MainWindow::setFlagCount(int flagCount) {
     emit updateFlagCount(flagCount);
 }
+
+
+void MainWindow::toggleSmile(bool shocked){
+    if(shocked) {
+        this->ui->smileButton->setIcon(this->shockedSmile);
+    }
+    else {
+        this->ui->smileButton->setIcon(this->smile);
+    }
+}
+
+

@@ -29,6 +29,7 @@ private slots:
 
     void timerTick(bool fromField = false);
     void gameOver(char gameStatus);
+    void toggleSmile(bool shocked);
 
 signals:
     void updateFlagCount(int number);
