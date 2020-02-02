@@ -110,6 +110,22 @@ void Field::paintEvent(QPaintEvent *) {
                 }
         }
     }
+    if (highlightLeft) {
+        if(visibleFieldArray[highlightY][highlightX] == UNOPENED) {
+            dp(highlightY, highlightX, number_images[0]);
+        }
+    }
+    if (highlightMiddle) {
+        for(int x = -1; x <= 1; x++) {
+            for(int y = -1; y <= 1; y++) {
+                int curx = highlightX + x, cury = highlightY + y;
+                if(withinField(curx,cury) && visibleFieldArray[cury][curx] == UNOPENED) {
+                    dp(cury, curx, number_images[0]);
+                }
+            }
+        }
+    }
+
     /* code used for testing ( draws the whole field )
     for (int y = 0; y < fieldHeight; y++) {
         for (int x = 0; x < fieldWidth; x++) {
@@ -126,13 +142,19 @@ void Field::paintEvent(QPaintEvent *) {
 }
 
 void Field::mouseMoveEvent(QMouseEvent *event) {
-    int highlightX, highlightY;
-
-    highlightX = event->x()/blockPixelWidth;
-    highlightY = event->y()/blockPixelHeight;
+    int newHighlightX = event->x()/blockPixelWidth;
+    int newHighlightY = event->y()/blockPixelHeight;
 
     if(event->buttons() & Qt::LeftButton) {
-
+        highlightLeft = true;
+    }
+    if(event->buttons() & Qt::MiddleButton) {
+        highlightMiddle = true;
+    }
+    if (newHighlightX != highlightX or newHighlightY != highlightY) {
+        update();
+        highlightX = newHighlightX;
+        highlightY = newHighlightY;
     }
 }
 
@@ -146,8 +168,9 @@ void Field::mousePressEvent(QMouseEvent *event) {
 
 void Field::mouseReleaseEvent(QMouseEvent *e){
 
+    highlightLeft = false;
+    highlightMiddle = false;
     emit toggleSmile(false);
-
     setMouseTracking(false);
 
     if(game_status == WON || game_status == LOST) return;

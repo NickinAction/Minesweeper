@@ -29,15 +29,15 @@ private:
 
     int fieldPixelWidth = 950;
     int fieldPixelHeight = 950;
-
-    int blockPixelWidth; // the size of one block on the field
-    int blockPixelHeight;
-
-    int fieldWidthInCells;
-    int fieldHeightInCells;
+    int blockPixelWidth, blockPixelHeight;
+    int highlightX = -1, highlightY = -1;
+    // initializing higlights with impossible values so
+    // moveEvent always updates on its first call
+    int fieldWidthInCells, fieldHeightInCells;
     int mineCount;
     int flagCount;
     bool drawflag = false;
+    bool highlightLeft = false, highlightMiddle = false;
     char visibleFieldArray[38][38]; // maximum size that we may need.
     short int hiddenFieldArray[38][38];
 
