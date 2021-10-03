@@ -1,14 +1,11 @@
-Minesweeper replication project. Made on Qt.
+Full Minesweeper replication project. Made in Qt using C++
 
-# TODO:
+
+
+## TODO:
 
 - **Custom mode**
-
-- Cheat codes for game 
-- Main Menu
+- Add cheat codes (for fun)
+- Add Main Menu
 - Sort resources by folders (WIP)
 
-
-# KNOWN BUGS:
-
-- NONE (yet)
